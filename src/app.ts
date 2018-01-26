@@ -50,16 +50,19 @@ class GlobalGameJamGame {
     this.raycaster = new THREE.Raycaster();
 
     this.mainTarget = new THREE.WebGLRenderTarget(
-        640, 480,
+        1920, 1080,
         {minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
 
     this.screenScene = new THREE.Scene();
 
     this.screenScene.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(2, 2),
-        new THREE.MeshBasicMaterial({map: this.mainTarget.texture})));
+        new THREE.PlaneGeometry(10, 10),
+        new THREE.MeshBasicMaterial({color: 0x101010})));
 
     this.screenCamera = new THREE.OrthographicCamera(-1, 1, -1, 1);
+
+    this.screenCamera.position.setY(10);
+    this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // Add basic building geometry.
 

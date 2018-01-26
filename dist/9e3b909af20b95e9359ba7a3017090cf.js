@@ -46133,10 +46133,12 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.position.set(0, 10, 5);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.raycaster = new THREE.Raycaster();
-        this.mainTarget = new THREE.WebGLRenderTarget(640, 480, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
+        this.mainTarget = new THREE.WebGLRenderTarget(1920, 1080, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
         this.screenScene = new THREE.Scene();
-        this.screenScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: this.mainTarget.texture })));
+        this.screenScene.add(new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshBasicMaterial({ color: 0x101010 })));
         this.screenCamera = new THREE.OrthographicCamera(-1, 1, -1, 1);
+        this.screenCamera.position.setY(10);
+        this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
         // Add basic building geometry.
         // TODO: Add Roads? Maybe a mesh or maybe something more complex.
         var x1 = -10;
