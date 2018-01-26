@@ -8,77 +8,27 @@
   <title>Global Game Jam 2018</title>
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
+    body {
+      font-family: sans-serif;
     }
 
-    .buildingInfomation {
-      position: absolute;
-      padding: 10px;
-      bottom: 0px;
-      left: 0px;
-      right: 0px;
-      width: 100%;
-      height: 150px;
-      background-color: #101010;
-    }
-
-    .buildingInfomation>pre {
-      color: #abfe2d;
-    }
-
-    .actions {
-      position: absolute;
-      padding: 10px;
-      bottom: 0px;
-      left: 0px;
-      right: 0px;
-      width: 100%;
-      height: 20px;
-      background-color: #101010;
-    }
-
-    .actions a {
-      display: inline-block;
-      margin-right: 10px;
-      color: #808080;
-      font-family: Courier New, Courier, monospace;
-      text-decoration: none;
-      border: 1px solid #abfe2d;
-      padding: 5px;
-    }
-
-    .actions a:hover {
-      color: #abfe2d;
-      font-family: Courier New, Courier, monospace;
-    }
-
-    pre {
-      padding: 5px;
-      font-size: 16px;
-      font-family: Courier New, Courier, monospace;
+    .container {
+      margin: 0 auto;
+      max-width: 900px;
     }
   </style>
 </head>
 
 <body>
-  <div id="container"></div>
-
-  <div class="buildingInfomation">
-    <pre id="buildingInfoPanel"></pre>
+  <div class="container">
+    <h1>Indirect Dungeon Crawller</h1>
+    <h2>Adventurers</h2>
+    <div class="adventurerList"></div>
+    <h2>Dungeon</h2>
+    <div class="dungeonInfomation"></div>
+    <h2>New Run</h2>
+    <div class="newRun"></div>
   </div>
-
-  <div class="actions">
-    <a href="#">Construct Router</a>
-
-    <a href="#">Construct Switch</a>
-
-    <a href="#">Provision Access</a>
-  </div>
-
-  <script src="/dist/9e3b909af20b95e9359ba7a3017090cf.js"></script>
 </body>
 
 </html>
