@@ -194,6 +194,38 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
 
   private generateMap(width: number, height: number) {
     const hasBuilding: boolean[][] = [];
+
+    for (let x = 0; x < width; x++) {
+      hasBuilding.push([]);
+      for (let y = 0; y < height; y++) {
+        if (x % 5 === 0 || y % 5 === 0) {
+          hasBuilding[x].push(true);
+        } else {
+          hasBuilding[x].push(false);
+        }
+      }
+    }
+
+    this.map = [];
+
+    for (let x = 0; x < width; x++) {
+      this.map.push([]);
+      for (let y = 0; y < height; y++) {
+        if (hasBuilding[x][y]) {
+          const newBuilding = new Building(5);
+          newBuilding.position.setX(x);
+          newBuilding.position.setZ(y);
+          this.scene.add(newBuilding);
+          this.map[x].push(newBuilding);
+        } else {
+          const newRoad = new Road(true, true, true, true);
+          newRoad.position.setX(x);
+          newRoad.position.setZ(y);
+          this.scene.add(newRoad);
+          this.map[x].push(newRoad);
+        }
+      }
+    }
   }
 }
 

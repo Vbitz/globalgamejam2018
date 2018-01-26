@@ -21,6 +21,8 @@ export class Road extends THREE.Mesh {
     } else {
       throw new Error('Not Implemented');
     }
+
+    this.scale.set(0.5, 0.5, 0.5);
   }
 
   private static loadMeshes() {
