@@ -46102,17 +46102,12 @@ exports.Building = Building;
 },{"three":7}],6:[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
-var THREE = require("three");
 function expect() {
     throw new Error('Expect failed');
 }
 exports.expect = expect;
-function isPhysicalMaterial(mat) {
-    return mat instanceof THREE.MeshPhysicalMaterial;
-}
-exports.isPhysicalMaterial = isPhysicalMaterial;
 
-},{"three":7}],4:[function(require,module,exports) {
+},{}],4:[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 var THREE = require("three");
@@ -46192,17 +46187,11 @@ var GlobalGameJamGame = /** @class */ (function () {
             intersects.sort(function (a, b) { return a.distance - b.distance; });
             var obj = intersects[0].object;
             if (obj instanceof Building_1.Building) {
-                if (obj != this.hoverObject && obj != this.selectedObject) {
-                    if (this.hoverObject && this.hoverObject !== this.selectedObject &&
-                        this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
-                        this.hoverObject.material.color.setHex(0xeaeaea);
-                    }
-                    obj.material.color.setHex(0xff0000);
-                    this.hoverObject = obj;
-                }
+                this.onHoverBuilding(obj);
             }
             else {
-                if (this.hoverObject.state === Building_1.BuildingHoverState.Hovered) {
+                if (this.hoverObject &&
+                    this.hoverObject.state === Building_1.BuildingHoverState.Hovered) {
                     this.hoverObject.changeState(Building_1.BuildingHoverState.Deselected);
                 }
                 this.hoverObject = null;
@@ -46235,19 +46224,24 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
     };
     GlobalGameJamGame.prototype.onMouseClick = function () {
-        console.log('click');
         if (!this.hoverObject) {
             return;
         }
-        if (!common_1.isPhysicalMaterial(this.hoverObject.material)) {
-            return;
-        }
-        if (this.selectedObject &&
-            common_1.isPhysicalMaterial(this.selectedObject.material)) {
-            this.selectedObject.material.color.setHex(0xeaeaea);
+        if (this.selectedObject) {
+            this.selectedObject.changeState(Building_1.BuildingHoverState.Deselected);
         }
         this.selectedObject = this.hoverObject;
-        this.hoverObject.material.color.setHex(0x1010ea);
+        this.selectedObject.changeState(Building_1.BuildingHoverState.Selected);
+    };
+    GlobalGameJamGame.prototype.onHoverBuilding = function (building) {
+        if (building != this.hoverObject && building != this.selectedObject) {
+            if (this.hoverObject &&
+                this.hoverObject.state === Building_1.BuildingHoverState.Hovered) {
+                this.hoverObject.changeState(Building_1.BuildingHoverState.Deselected);
+            }
+            building.changeState(Building_1.BuildingHoverState.Hovered);
+            this.hoverObject = building;
+        }
     };
     return GlobalGameJamGame;
 }());

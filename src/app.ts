@@ -124,16 +124,10 @@ class GlobalGameJamGame {
 
       const obj = intersects[0].object;
       if (obj instanceof Building) {
-        if (obj != this.hoverObject && obj != this.selectedObject) {
-          if (this.hoverObject && this.hoverObject !== this.selectedObject &&
-              this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
-            this.hoverObject.material.color.setHex(0xeaeaea);
-          }
-          obj.material.color.setHex(0xff0000);
-          this.hoverObject = obj;
-        }
+        this.onHoverBuilding(obj);
       } else {
-        if (this.hoverObject.state === BuildingHoverState.Hovered) {
+        if (this.hoverObject &&
+            this.hoverObject.state === BuildingHoverState.Hovered) {
           this.hoverObject.changeState(BuildingHoverState.Deselected);
         }
         this.hoverObject = null;
@@ -170,19 +164,25 @@ class GlobalGameJamGame {
   }
 
   private onMouseClick() {
-    console.log('click');
     if (!this.hoverObject) {
       return;
     }
-    if (!isPhysicalMaterial(this.hoverObject.material)) {
-      return;
-    }
-    if (this.selectedObject &&
-        isPhysicalMaterial(this.selectedObject.material)) {
-      this.selectedObject.material.color.setHex(0xeaeaea);
+    if (this.selectedObject) {
+      this.selectedObject.changeState(BuildingHoverState.Deselected);
     }
     this.selectedObject = this.hoverObject;
-    this.hoverObject.material.color.setHex(0x1010ea);
+    this.selectedObject.changeState(BuildingHoverState.Selected);
+  }
+
+  private onHoverBuilding(building: Building) {
+    if (building != this.hoverObject && building != this.selectedObject) {
+      if (this.hoverObject &&
+          this.hoverObject.state === BuildingHoverState.Hovered) {
+        this.hoverObject.changeState(BuildingHoverState.Deselected);
+      }
+      building.changeState(BuildingHoverState.Hovered);
+      this.hoverObject = building;
+    }
   }
 }
 
