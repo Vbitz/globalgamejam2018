@@ -52,7 +52,7 @@ export class Dungeon {
     }
 
     // Add random initial edges
-    const edgeCount = 100;
+    const edgeCount = 200;
 
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
