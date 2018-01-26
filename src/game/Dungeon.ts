@@ -23,6 +23,10 @@ class Node {
     this.edges.push(new Edge(target));
   }
 
+  hasEdgeTo(target: string) {
+    return this.edges.filter((edge) => edge.getTarget() === target).length > 0;
+  }
+
   exportDot(): string {
     return `${
         this.edges.map((e) => `${this.getId()} -> ${e.getTarget()};`)
@@ -38,7 +42,7 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
-    const nodeCount = 100;
+    const nodeCount = 500;
 
     // Add random nodes
     const nodes: string[] = [];
@@ -48,7 +52,7 @@ export class Dungeon {
     }
 
     // Add random initial edges
-    const edgeCount = 200;
+    const edgeCount = 100;
 
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
@@ -124,7 +128,11 @@ export class Dungeon {
     return newNode.getId();
   }
 
-  private addEdge(from: string, to: string) {
+  private addEdge(from: string, to: string): boolean {
+    if (from === to) {
+      return false;
+    }
+
     const a = this.getNode(from);
     const b = this.getNode(to);
 
@@ -136,8 +144,14 @@ export class Dungeon {
       throw new Error(`to{${to}} not found.`);
     }
 
+    if (a.hasEdgeTo(to)) {
+      return false;
+    }
+
     a.addEdgeTo(to);
     b.addEdgeTo(from);
+
+    return true;
   }
 
   private getNode(id: string): Node|null {
