@@ -21,6 +21,8 @@ export class Building extends THREE.Mesh {
 
   static mesh: LoadedMesh|null = null;
 
+  private connected: boolean;
+
   constructor(floors: number) {
     if (!Building.mesh) {
       Building.loadMesh();
@@ -36,6 +38,8 @@ export class Building extends THREE.Mesh {
 
     this.state = BuildingHoverState.Deselected;
 
+    this.connected = Math.random() > 0.25;
+
     this.updateColor();
   }
 
@@ -49,7 +53,7 @@ export class Building extends THREE.Mesh {
   }
 
   getBuildingConnected(): boolean {
-    return false;
+    return this.connected;
   }
 
   getBuildingBandwidth(): string {
@@ -70,6 +74,12 @@ export class Building extends THREE.Mesh {
       this.material[1].color.setHex(0x808080);
     } else if (this.state === BuildingHoverState.Deselected) {
       this.material[1].color.setHex(0x575757);
+    }
+
+    if (this.getBuildingConnected()) {
+      this.material[2].color.setHex(0x10ea10);
+    } else {
+      this.material[2].color.setHex(0xea1010);
     }
   }
 }

@@ -44,7 +44,7 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(0, 10, 5);
+    this.camera.position.set(0, 10, 2);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.raycaster = new THREE.Raycaster();

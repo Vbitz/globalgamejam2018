@@ -46092,6 +46092,7 @@ var Building = /** @class */function (_super) {
     _this.scale.set(0.5, 0.5, 0.5);
     _this.position.setY(-floors);
     _this.state = BuildingHoverState.Deselected;
+    _this.connected = Math.random() > 0.25;
     _this.updateColor();
     return _this;
   }
@@ -46103,7 +46104,7 @@ var Building = /** @class */function (_super) {
     return "{" + 12 + "-" + 1234 + "-" + 13 + "}";
   };
   Building.prototype.getBuildingConnected = function () {
-    return false;
+    return this.connected;
   };
   Building.prototype.getBuildingBandwidth = function () {
     return '0 kbps';
@@ -46121,6 +46122,11 @@ var Building = /** @class */function (_super) {
       this.material[1].color.setHex(0x808080);
     } else if (this.state === BuildingHoverState.Deselected) {
       this.material[1].color.setHex(0x575757);
+    }
+    if (this.getBuildingConnected()) {
+      this.material[2].color.setHex(0x10ea10);
+    } else {
+      this.material[2].color.setHex(0xea1010);
     }
   };
   Building.mesh = null;
@@ -46158,7 +46164,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
-        this.camera.position.set(0, 10, 5);
+        this.camera.position.set(0, 10, 2);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.raycaster = new THREE.Raycaster();
         this.mainTarget = new THREE.WebGLRenderTarget(256, 240, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
