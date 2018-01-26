@@ -25,16 +25,18 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-
-    this.camera.position.set(10, 10, 10);
+    this.camera.position.set(5, 5, 5);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     const cube = new THREE.Mesh(
-        new THREE.CubeGeometry(1, 2, 1),
+        new THREE.CubeGeometry(1, 1, 1),
         new THREE.MeshLambertMaterial({color: new THREE.Color(0x101010)}));
 
     this.scene.add(cube);
+
+    this.scene.add(new THREE.Mesh(
+        new THREE.PlaneGeometry(10, 10),
+        new THREE.MeshLambertMaterial({color: 0xeaeaea})));
 
     const light = new THREE.AmbientLight(0xeaeaea);
 
@@ -42,13 +44,15 @@ class GlobalGameJamGame {
 
     this.container.appendChild(this.renderer.domElement);
 
-    this.renderer.domElement.addEventListener('keypress', (ev) => {
+    document.body.addEventListener('keypress', (ev) => {
       this.onKeyPress(ev);
     });
 
     window.addEventListener('resize', (ev) => {
-      this.onResize(ev);
+      this.onResize();
     });
+
+    this.onResize();
 
     this.update();
   }
@@ -60,19 +64,22 @@ class GlobalGameJamGame {
   }
 
   private onKeyPress(ev: KeyboardEvent) {
-    if (ev.char === 'w') {
-      this.camera.position.add(new THREE.Vector3(0, 1, 0));
-    } else if (ev.char === 's') {
-    } else if (ev.char === 'a') {
-    } else if (ev.char === 'd') {
+    if (ev.key === 'w') {
+      this.camera.position.add(new THREE.Vector3(0, 0, 1));
+    } else if (ev.key === 's') {
+      this.camera.position.add(new THREE.Vector3(0, 0, -1));
+    } else if (ev.key === 'a') {
+      this.camera.position.add(new THREE.Vector3(1, 0, 0));
+    } else if (ev.key === 'd') {
+      this.camera.position.add(new THREE.Vector3(-1, 0, 0));
     }
   }
 
-  private onResize(ev: UIEvent) {
-    console.log('resize', window.innerWidth, window.innerHeight);
+  private onResize() {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
   }
 }
 

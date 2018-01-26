@@ -46075,20 +46075,21 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.position.set(10, 10, 10);
+        this.camera.position.set(5, 5, 5);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 1), new THREE.MeshLambertMaterial({ color: new THREE.Color(0x101010) }));
+        var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshLambertMaterial({ color: new THREE.Color(0x101010) }));
         this.scene.add(cube);
+        this.scene.add(new THREE.Mesh(new THREE.PlaneGeometry(10, 10), new THREE.MeshLambertMaterial({ color: 0xeaeaea })));
         var light = new THREE.AmbientLight(0xeaeaea);
         this.scene.add(light);
         this.container.appendChild(this.renderer.domElement);
-        this.renderer.domElement.addEventListener('keypress', function (ev) {
+        document.body.addEventListener('keypress', function (ev) {
             _this.onKeyPress(ev);
         });
         window.addEventListener('resize', function (ev) {
-            _this.onResize(ev);
+            _this.onResize();
         });
+        this.onResize();
         this.update();
     };
     GlobalGameJamGame.prototype.update = function () {
@@ -46096,20 +46097,23 @@ var GlobalGameJamGame = /** @class */ (function () {
         requestAnimationFrame(this.update.bind(this));
     };
     GlobalGameJamGame.prototype.onKeyPress = function (ev) {
-        if (ev.char === 'w') {
-            this.camera.position.add(new THREE.Vector3(0, 1, 0));
+        if (ev.key === 'w') {
+            this.camera.position.add(new THREE.Vector3(0, 0, 1));
         }
-        else if (ev.char === 's') {
+        else if (ev.key === 's') {
+            this.camera.position.add(new THREE.Vector3(0, 0, -1));
         }
-        else if (ev.char === 'a') {
+        else if (ev.key === 'a') {
+            this.camera.position.add(new THREE.Vector3(1, 0, 0));
         }
-        else if (ev.char === 'd') {
+        else if (ev.key === 'd') {
+            this.camera.position.add(new THREE.Vector3(-1, 0, 0));
         }
     };
-    GlobalGameJamGame.prototype.onResize = function (ev) {
-        console.log('resize', window.innerWidth, window.innerHeight);
+    GlobalGameJamGame.prototype.onResize = function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
     };
     return GlobalGameJamGame;
 }());
