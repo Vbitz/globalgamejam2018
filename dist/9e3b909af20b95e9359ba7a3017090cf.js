@@ -46077,6 +46077,8 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera = new THREE.PerspectiveCamera();
         this.camera.position.set(0, 20, 3);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        // Add basic building geometry.
+        // TODO: Add Roads? Maybe a mesh or maybe something more complex.
         var x1 = -54;
         var z1 = -54;
         for (var x = -32; x < 32; x++) {
@@ -46142,6 +46144,13 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
+    };
+    GlobalGameJamGame.prototype.onMouseClick = function (ev) {
+        var mouse3D = new THREE.Vector3();
+        mouse3D.x = (ev.clientX / window.innerWidth) * 2 - 1;
+        mouse3D.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+        mouse3D.z = 0.5;
+        var unprojectedVector = this.projector.unprojectVector(mouse3D, this.camera);
     };
     return GlobalGameJamGame;
 }());

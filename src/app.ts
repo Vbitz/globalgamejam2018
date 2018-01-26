@@ -10,6 +10,8 @@ class GlobalGameJamGame {
 
   private container: HTMLDivElement;
 
+  private projector: THREE.Projector;
+
   constructor() {}
 
   init() {
@@ -27,6 +29,10 @@ class GlobalGameJamGame {
 
     this.camera.position.set(0, 20, 3);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    // Add basic building geometry.
+
+    // TODO: Add Roads? Maybe a mesh or maybe something more complex.
 
     let x1 = -54;
     let z1 = -54;
@@ -116,6 +122,16 @@ class GlobalGameJamGame {
 
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
+  }
+
+  private onMouseClick(ev: MouseEvent) {
+    const mouse3D = new THREE.Vector3();
+    mouse3D.x = (ev.clientX / window.innerWidth) * 2 - 1;
+    mouse3D.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+    mouse3D.z = 0.5;
+
+    const unprojectedVector =
+        this.projector.unprojectVector(mouse3D, this.camera);
   }
 }
 
