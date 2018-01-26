@@ -28,8 +28,8 @@ class GlobalGameJamGame {
     this.camera.position.set(0, 20, 3);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    let x1 = -50;
-    let z1 = -50;
+    let x1 = -54;
+    let z1 = -54;
 
     for (let x = -32; x < 32; x++) {
       z1 = -50;
@@ -52,14 +52,17 @@ class GlobalGameJamGame {
       }
 
       x1 += 1;
-      if (x1 % 4 === 0) {
+      if (x1 % 6 === 0) {
         x1 += 1;
       }
     }
 
     const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(1000, 1000),
+        new THREE.PlaneGeometry(100, 100),
         new THREE.MeshLambertMaterial({color: 0x101010}));
+
+    plane.position.setX(-10);
+    plane.position.setZ(-10);
 
     plane.rotateX(THREE.Math.degToRad(-90));
 

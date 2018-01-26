@@ -46077,8 +46077,8 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera = new THREE.PerspectiveCamera();
         this.camera.position.set(0, 20, 3);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        var x1 = -50;
-        var z1 = -50;
+        var x1 = -54;
+        var z1 = -54;
         for (var x = -32; x < 32; x++) {
             z1 = -50;
             for (var z = -32; z < 32; z++) {
@@ -46095,11 +46095,13 @@ var GlobalGameJamGame = /** @class */ (function () {
                 }
             }
             x1 += 1;
-            if (x1 % 4 === 0) {
+            if (x1 % 6 === 0) {
                 x1 += 1;
             }
         }
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0x101010 }));
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshLambertMaterial({ color: 0x101010 }));
+        plane.position.setX(-10);
+        plane.position.setZ(-10);
         plane.rotateX(THREE.Math.degToRad(-90));
         this.scene.add(plane);
         var light = new THREE.AmbientLight(0xeaeaea);
