@@ -46076,8 +46076,9 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
-        this.camera.position.set(0, 20, 3);
+        this.camera.position.set(0, 10, 5);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+        this.raycaster = new THREE.Raycaster();
         // Add basic building geometry.
         // TODO: Add Roads? Maybe a mesh or maybe something more complex.
         var x1 = -54;
@@ -46086,7 +46087,7 @@ var GlobalGameJamGame = /** @class */ (function () {
             z1 = -50;
             for (var z = -32; z < 32; z++) {
                 var height = Math.random() * 4;
-                THREE.Math.clamp(height, 0.5, 4);
+                THREE.Math.clamp(height, 1, 4);
                 var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
                 var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
                 cube.position.set(x1, height / 2, z1);
@@ -46131,8 +46132,11 @@ var GlobalGameJamGame = /** @class */ (function () {
         var intersects = this.raycaster.intersectObjects(this.scene.children);
         intersects.forEach(function (intersect) {
             var obj = intersect.object;
-            if (!obj instanceof THREE.Mesh) {
+            if (!(obj instanceof THREE.Mesh)) {
                 return;
+            }
+            if (obj.material instanceof THREE.MeshPhysicalMaterial) {
+                obj.material.color.setHex(0xff0000);
             }
         });
         this.renderer.render(this.scene, this.camera);

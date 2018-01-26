@@ -29,8 +29,10 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(0, 20, 3);
+    this.camera.position.set(0, 10, 5);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    this.raycaster = new THREE.Raycaster();
 
     // Add basic building geometry.
 
@@ -44,7 +46,7 @@ class GlobalGameJamGame {
 
       for (let z = -32; z < 32; z++) {
         const height = Math.random() * 4;
-        THREE.Math.clamp(height, 0.5, 4);
+        THREE.Math.clamp(height, 1, 4);
         const mat =
             new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
         const cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
@@ -112,8 +114,11 @@ class GlobalGameJamGame {
 
     intersects.forEach((intersect) => {
       const obj = intersect.object;
-      if (!obj instanceof THREE.Mesh) {
+      if (!(obj instanceof THREE.Mesh)) {
         return;
+      }
+      if (obj.material instanceof THREE.MeshPhysicalMaterial) {
+        obj.material.color.setHex(0xff0000);
       }
     });
 
