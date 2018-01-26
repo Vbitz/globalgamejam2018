@@ -46133,7 +46133,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.position.set(0, 10, 5);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.raycaster = new THREE.Raycaster();
-        this.mainTarget = new THREE.WebGLRenderTarget(640, 480);
+        this.mainTarget = new THREE.WebGLRenderTarget(640, 480, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter });
         this.screenScene = new THREE.Scene();
         this.screenScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: this.mainTarget.texture })));
         this.screenCamera = new THREE.OrthographicCamera(-1, 1, -1, 1);

@@ -49,7 +49,9 @@ class GlobalGameJamGame {
 
     this.raycaster = new THREE.Raycaster();
 
-    this.mainTarget = new THREE.WebGLRenderTarget(640, 480);
+    this.mainTarget = new THREE.WebGLRenderTarget(
+        640, 480,
+        {minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
 
     this.screenScene = new THREE.Scene();
 
