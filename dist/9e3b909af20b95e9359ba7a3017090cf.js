@@ -46077,17 +46077,26 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera = new THREE.PerspectiveCamera();
         this.camera.position.set(0, 20, 3);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        for (var x = -50; x < 50; x += 1.5) {
-            for (var z = -50; z < 50; z += 1.5) {
-                if (Math.random() > 0.8) {
-                    continue;
-                }
+        var x1 = -50;
+        var z1 = -50;
+        for (var x = -32; x < 32; x++) {
+            z1 = -50;
+            for (var z = -32; z < 32; z++) {
                 var height = Math.random() * 4;
                 THREE.Math.clamp(height, 0.5, 4);
                 var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
                 var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
-                cube.position.set(x, height / 2, z);
+                cube.position.set(x1, height / 2, z1);
+                console.log(x1, z1);
                 this.scene.add(cube);
+                z1 += 1;
+                if (z1 % 4 === 0) {
+                    z1 += 1;
+                }
+            }
+            x1 += 1;
+            if (x1 % 4 === 0) {
+                x1 += 1;
             }
         }
         var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0x101010 }));
