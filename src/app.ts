@@ -132,6 +132,10 @@ class GlobalGameJamGame {
 
     const unprojectedVector =
         this.projector.unprojectVector(mouse3D, this.camera);
+
+    const ray = new THREE.Ray(
+        this.camera.position,
+    )
   }
 }
 

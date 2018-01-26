@@ -46151,6 +46151,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         mouse3D.y = -(ev.clientY / window.innerHeight) * 2 + 1;
         mouse3D.z = 0.5;
         var unprojectedVector = this.projector.unprojectVector(mouse3D, this.camera);
+        var ray = new THREE.Ray(this.camera.position);
     };
     return GlobalGameJamGame;
 }());
