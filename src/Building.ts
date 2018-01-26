@@ -6,6 +6,9 @@ export enum BuildingHoverState {
   Selected,
 }
 
+const modelData = JSON.parse(
+    require('fs').readFileSync(__dirname + '/../res/building.json', 'utf8'));
+
 export class Building extends THREE.Mesh {
   material: THREE.MeshPhysicalMaterial;
 
@@ -13,8 +16,8 @@ export class Building extends THREE.Mesh {
 
   constructor(floors: number) {
     const modelLoader = new THREE.JSONLoader();
-    const model = modelLoader.parse(JSON.parse(require('fs').readFileSync(
-        __dirname + '../res/building.json', 'utf8')));
+    console.log(modelData);
+    const model = modelLoader.load(modelData);
 
     console.log(model);
 
