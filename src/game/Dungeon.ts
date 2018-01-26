@@ -15,7 +15,7 @@ class Edge {
 
 class Node {
   /** Distance from starting node */
-  difficulty: number = -1;
+  difficulty = -1;
 
   private edges: Edge[] = [];
 
@@ -127,18 +127,33 @@ export class Dungeon {
       }
     }
 
+    let maxDifficulty = 0;
+
     const setDifficulty = (node: string, level: number) => {
       const nodeObj = this.getNode(node) || expect();
-      if (nodeObj.difficulty > 0) {
+
+      if (nodeObj.difficulty > -1) {
         return;
       }
-      nodeObj.getEdgeTargets().forEach(
-          (edge) => {
 
-          });
+      nodeObj.difficulty = level;
+
+      maxDifficulty = Math.max(level, maxDifficulty);
+
+      nodeObj.getEdgeTargets().forEach((edge) => {
+        setDifficulty(edge, level + 1);
+      });
     };
 
     setDifficulty('entry', 0);
+
+    this.addNode('end');
+
+    this.nodes.forEach((node) => {
+      if (node.difficulty === maxDifficulty) {
+        this.addEdge(node.getId(), 'end');
+      }
+    });
   }
 
   exportDot(): string {
