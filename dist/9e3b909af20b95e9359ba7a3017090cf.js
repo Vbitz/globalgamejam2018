@@ -46134,6 +46134,9 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.raycaster = new THREE.Raycaster();
         this.mainTarget = new THREE.WebGLRenderTarget(640, 480);
+        this.screenScene = new THREE.Scene();
+        this.screenScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ map: this.mainTarget.texture })));
+        this.screenCamera = new THREE.OrthographicCamera(-1, 1, -1, 1);
         // Add basic building geometry.
         // TODO: Add Roads? Maybe a mesh or maybe something more complex.
         var x1 = -10;
@@ -46201,7 +46204,8 @@ var GlobalGameJamGame = /** @class */ (function () {
                 this.hoverObject = null;
             }
         }
-        this.renderer.render(this.scene, this.camera, this.mainTarget);
+        this.renderer.render(this.scene, this.camera, this.mainTarget, true);
+        this.renderer.render(this.screenScene, this.screenCamera);
         requestAnimationFrame(this.update.bind(this));
     };
     GlobalGameJamGame.prototype.onKeyPress = function (ev) {
