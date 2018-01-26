@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {expect} from './common';
+import {expect, isPhysicalMaterial} from './common';
 
 class GlobalGameJamGame {
   private renderer: THREE.WebGLRenderer;
@@ -14,6 +14,7 @@ class GlobalGameJamGame {
 
   private mouse = new THREE.Vector2();
 
+  private hoverObject: THREE.Mesh|null = null;
   private currentObject: THREE.Mesh|null = null;
 
   constructor() {}
@@ -53,7 +54,6 @@ class GlobalGameJamGame {
             new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
         const cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
         cube.position.set(x1, height / 2, z1);
-        console.log(x1, z1);
 
         this.scene.add(cube);
 
@@ -104,6 +104,10 @@ class GlobalGameJamGame {
       this.onMouseMove(ev);
     });
 
+    window.addEventListener('click', (ev) => {
+      this.onMouseClick();
+    });
+
     this.onResize();
 
     this.update();
@@ -119,13 +123,14 @@ class GlobalGameJamGame {
 
       const obj = intersects[0].object;
       if (obj instanceof THREE.Mesh &&
-          obj.material instanceof THREE.MeshPhysicalMaterial) {
-        if (this.currentObject &&
-            this.currentObject.material instanceof THREE.MeshPhysicalMaterial) {
-          this.currentObject.material.color.setHex(0xeaeaea);
+          obj.material instanceof THREE.MeshPhysicalMaterial &&
+          obj != this.hoverObject) {
+        if (this.hoverObject &&
+            this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
+          this.hoverObject.material.color.setHex(0xeaeaea);
         }
         obj.material.color.setHex(0xff0000);
-        this.currentObject = obj;
+        this.hoverObject = obj;
       }
     }
 
@@ -156,6 +161,18 @@ class GlobalGameJamGame {
   private onMouseMove(ev: MouseEvent) {
     this.mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
+  }
+
+  private onMouseClick() {
+    console.log('click');
+    if (!this.hoverObject) {
+      return;
+    }
+    if (!isPhysicalMaterial(this.hoverObject.material)) {
+      return;
+    }
+    this.hoverObject.material.color.setHex(0x1010ea);
+    this.currentObject = this.hoverObject;
   }
 }
 
