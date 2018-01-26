@@ -13,11 +13,33 @@
       padding: 0;
       overflow: hidden;
     }
+
+    .buildingInfomation {
+      position: absolute;
+      padding: 10px;
+      top: 10px;
+      left: 10px;
+      width: 300px;
+      height: 150px;
+      background-color: #101010;
+    }
+
+    .buildingInfomation>pre {
+      color: greenyellow;
+    }
+
+    pre {
+      padding: 5px;
+    }
   </style>
 </head>
 
 <body>
   <div id="container"></div>
+
+  <div class="buildingInfomation">
+    <pre id="buildingInfoPanel"></pre>
+  </div>
 
   <script src="/dist/9e3b909af20b95e9359ba7a3017090cf.js"></script>
 </body>

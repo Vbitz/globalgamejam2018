@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import {Building, BuildingHoverState} from './Building';
-import {expect, isPhysicalMaterial} from './common';
+import {expect} from './common';
 
 class GlobalGameJamGame {
   private renderer: THREE.WebGLRenderer;
@@ -11,6 +11,7 @@ class GlobalGameJamGame {
   private camera: THREE.PerspectiveCamera;
 
   private container: HTMLDivElement;
+  private buildingInfoPanel: HTMLPreElement;
 
   private raycaster: THREE.Raycaster;
 
@@ -23,6 +24,9 @@ class GlobalGameJamGame {
 
   init() {
     this.container = document.querySelector('#container') || expect();
+
+    this.buildingInfoPanel =
+        document.querySelector('#buildingInfoPanel') || expect();
 
     this.renderer = new THREE.WebGLRenderer({antialias: true});
 
@@ -172,6 +176,9 @@ class GlobalGameJamGame {
     }
     this.selectedObject = this.hoverObject;
     this.selectedObject.changeState(BuildingHoverState.Selected);
+    this.buildingInfoPanel.innerText = `=== BUILDING INFO PANEL ===
+BLDID  =${Math.random()}
+CONNECT=${true ? 'TRUE' : 'FALSE'}`;
   }
 
   private onHoverBuilding(building: Building) {

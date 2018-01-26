@@ -46122,6 +46122,8 @@ var GlobalGameJamGame = /** @class */ (function () {
     GlobalGameJamGame.prototype.init = function () {
         var _this = this;
         this.container = document.querySelector('#container') || common_1.expect();
+        this.buildingInfoPanel =
+            document.querySelector('#buildingInfoPanel') || common_1.expect();
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setClearColor(new THREE.Color(0x6495ED));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -46232,6 +46234,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         }
         this.selectedObject = this.hoverObject;
         this.selectedObject.changeState(Building_1.BuildingHoverState.Selected);
+        this.buildingInfoPanel.innerText = "=== BUILDING INFO PANEL ===\nBLDID  =" + Math.random() + "\nCONNECT=" + (true ? 'TRUE' : 'FALSE');
     };
     GlobalGameJamGame.prototype.onHoverBuilding = function (building) {
         if (building != this.hoverObject && building != this.selectedObject) {
