@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import {Building} from './Building';
+import {Building, BuildingHoverState} from './Building';
 import {expect, isPhysicalMaterial} from './common';
 
 class GlobalGameJamGame {
@@ -123,17 +123,18 @@ class GlobalGameJamGame {
       intersects.sort((a, b) => a.distance - b.distance);
 
       const obj = intersects[0].object;
-      if (obj instanceof Building && obj != this.hoverObject &&
-          obj != this.selectedObject) {
-        if (this.hoverObject && this.hoverObject !== this.selectedObject &&
-            this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
-          this.hoverObject.material.color.setHex(0xeaeaea);
+      if (obj instanceof Building) {
+        if (obj != this.hoverObject && obj != this.selectedObject) {
+          if (this.hoverObject && this.hoverObject !== this.selectedObject &&
+              this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
+            this.hoverObject.material.color.setHex(0xeaeaea);
+          }
+          obj.material.color.setHex(0xff0000);
+          this.hoverObject = obj;
         }
-        obj.material.color.setHex(0xff0000);
-        this.hoverObject = obj;
-      } else if (!(obj instanceof Building)) {
-        if (this.hoverObject && this.hoverObject !== this.selectedObject) {
-          this.hoverObject.material.color.setHex(0xeaeaea);
+      } else {
+        if (this.hoverObject.state === BuildingHoverState.Hovered) {
+          this.hoverObject.changeState(BuildingHoverState.Deselected);
         }
         this.hoverObject = null;
       }

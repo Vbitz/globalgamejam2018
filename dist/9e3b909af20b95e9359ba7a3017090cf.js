@@ -46065,6 +46065,12 @@ var __extends = (this && this.__extends) || (function () {
 })();
 exports.__esModule = true;
 var THREE = require("three");
+var BuildingHoverState;
+(function (BuildingHoverState) {
+    BuildingHoverState[BuildingHoverState["Deselected"] = 0] = "Deselected";
+    BuildingHoverState[BuildingHoverState["Hovered"] = 1] = "Hovered";
+    BuildingHoverState[BuildingHoverState["Selected"] = 2] = "Selected";
+})(BuildingHoverState = exports.BuildingHoverState || (exports.BuildingHoverState = {}));
 var Building = /** @class */ (function (_super) {
     __extends(Building, _super);
     function Building(height) {
@@ -46072,8 +46078,23 @@ var Building = /** @class */ (function (_super) {
         var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
         _this = _super.call(this, new THREE.CubeGeometry(1, height, 1), mat) || this;
         _this.position.setY(height / 2);
+        _this.state = BuildingHoverState.Deselected;
         return _this;
     }
+    Building.prototype.changeState = function (newState) {
+        this.state = newState;
+        this.updateColor();
+    };
+    Building.prototype.updateColor = function () {
+        if (this.state === BuildingHoverState.Selected) {
+            this.material.color.setHex(0x1010ea);
+        }
+        else if (this.state === BuildingHoverState.Hovered) {
+            this.material.color.setHex(0xea1010);
+        }
+        else if (this.state === BuildingHoverState.Deselected)
+            [this.material.color.setHex(0xeaeaea)];
+    };
     return Building;
 }(THREE.Mesh));
 exports.Building = Building;
@@ -46170,18 +46191,19 @@ var GlobalGameJamGame = /** @class */ (function () {
         if (intersects.length > 0) {
             intersects.sort(function (a, b) { return a.distance - b.distance; });
             var obj = intersects[0].object;
-            if (obj instanceof Building_1.Building && obj != this.hoverObject &&
-                obj != this.selectedObject) {
-                if (this.hoverObject && this.hoverObject !== this.selectedObject &&
-                    this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
-                    this.hoverObject.material.color.setHex(0xeaeaea);
+            if (obj instanceof Building_1.Building) {
+                if (obj != this.hoverObject && obj != this.selectedObject) {
+                    if (this.hoverObject && this.hoverObject !== this.selectedObject &&
+                        this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
+                        this.hoverObject.material.color.setHex(0xeaeaea);
+                    }
+                    obj.material.color.setHex(0xff0000);
+                    this.hoverObject = obj;
                 }
-                obj.material.color.setHex(0xff0000);
-                this.hoverObject = obj;
             }
-            else if (!(obj instanceof Building_1.Building)) {
-                if (this.hoverObject && this.hoverObject !== this.selectedObject) {
-                    this.hoverObject.material.color.setHex(0xeaeaea);
+            else {
+                if (this.hoverObject.state === Building_1.BuildingHoverState.Hovered) {
+                    this.hoverObject.changeState(Building_1.BuildingHoverState.Deselected);
                 }
                 this.hoverObject = null;
             }
