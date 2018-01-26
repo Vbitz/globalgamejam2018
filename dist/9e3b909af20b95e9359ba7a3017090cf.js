@@ -46356,13 +46356,21 @@ var GlobalGameJamGame = /** @class */ (function () {
                     this.map[x].push(newBuilding);
                 }
                 else {
-                    var up = hasBuilding[x] ? (hasBuilding[x][y - 1] ? true : false) : true;
-                    var down = hasBuilding[x] ? (hasBuilding[x][y + 1] ? true : false) : true;
+                    var up = hasBuilding[x] ?
+                        (hasBuilding[x][y - 1] === undefined ? true :
+                            hasBuilding[x][y - 1]) :
+                        true;
+                    var down = hasBuilding[x] ?
+                        (hasBuilding[x][y + 1] === undefined ? true :
+                            hasBuilding[x][y + 1]) :
+                        true;
                     var left = hasBuilding[x - 1] ?
-                        (hasBuilding[x - 1][y] ? true : false) :
+                        (hasBuilding[x - 1][y] === undefined ? true :
+                            hasBuilding[x - 1][y]) :
                         true;
                     var right = hasBuilding[x + 1] ?
-                        (hasBuilding[x + 1][y] ? true : false) :
+                        (hasBuilding[x + 1][y] === undefined ? true :
+                            hasBuilding[x + 1][y]) :
                         true;
                     var newRoad = new Road_1.Road(up, down, left, right);
                     newRoad.position.setX(x - (width / 2));
