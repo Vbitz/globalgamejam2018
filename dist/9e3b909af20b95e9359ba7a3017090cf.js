@@ -46343,7 +46343,13 @@ var GlobalGameJamGame = /** @class */ (function () {
             this.map.push([]);
             for (var y = 0; y < height; y++) {
                 if (hasBuilding[x][y]) {
-                    var newBuilding = new Building_1.Building(1);
+                    var newBuilding = new Building_1.Building(Math.random() > 0.5 ?
+                        (Math.random() > 0.5 ?
+                            1.5 :
+                            (Math.random() > 0.5 ?
+                                1 :
+                                (Math.random() > 0.5 ? 0.5 : 0))) :
+                        2);
                     newBuilding.position.setX(x - (width / 2));
                     newBuilding.position.setZ(y - (height / 2));
                     this.scene.add(newBuilding);

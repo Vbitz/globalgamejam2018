@@ -201,7 +201,14 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
       this.map.push([]);
       for (let y = 0; y < height; y++) {
         if (hasBuilding[x][y]) {
-          const newBuilding = new Building(1);
+          const newBuilding = new Building(
+              Math.random() > 0.5 ?
+                  (Math.random() > 0.5 ?
+                       1.5 :
+                       (Math.random() > 0.5 ?
+                            1 :
+                            (Math.random() > 0.5 ? 0.5 : 0))) :
+                  2);
           newBuilding.position.setX(x - (width / 2));
           newBuilding.position.setZ(y - (height / 2));
           this.scene.add(newBuilding);
