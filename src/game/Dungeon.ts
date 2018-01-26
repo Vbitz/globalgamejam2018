@@ -38,8 +38,6 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
-    console.log('Generating');
-
     const nodeCount = 100;
 
     // Add random nodes
@@ -106,11 +104,18 @@ export class Dungeon {
 
   exportDot(): string {
     let body = '';
-    this.nodes.forEach((v, k) => {body += `${k};\n`});
-    this.nodes.forEach((v) => {body += `${v.exportDot()}\n`});
+
+    this.nodes.forEach((v, k) => {
+      body += `${k};\n`;
+    });
+
+    this.nodes.forEach((v) => {
+      body += `${v.exportDot()}\n`;
+    });
+
     return `digraph G {
         ${body}
-      }`
+      }`;
   }
 
   private addNode(): string {
@@ -124,11 +129,11 @@ export class Dungeon {
     const b = this.getNode(to);
 
     if (!a) {
-      throw new Error(`from{${from}} not found.`)
+      throw new Error(`from{${from}} not found.`);
     }
 
     if (!b) {
-      throw new Error(`to{${to}} not found.`)
+      throw new Error(`to{${to}} not found.`);
     }
 
     a.addEdgeTo(to);

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function randomId() {
-    return (Math.random() * 100000000).toString(16);
+    return 'id_' + (Math.random() * 100000000).toString(16).replace('.', '_');
 }
 exports.randomId = randomId;
 function expect() {

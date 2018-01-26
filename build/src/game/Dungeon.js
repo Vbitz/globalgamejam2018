@@ -37,7 +37,6 @@ var Dungeon = /** @class */ (function () {
     }
     Dungeon.prototype.generateLevel = function () {
         var _this = this;
-        console.log('Generating');
         var nodeCount = 100;
         // Add random nodes
         var nodes = [];
@@ -76,7 +75,6 @@ var Dungeon = /** @class */ (function () {
             while (nodeList.length > 0) {
                 _loop_2();
             }
-            console.log(groups);
             if (groups.length === 1) {
                 return "break";
             }
@@ -97,8 +95,12 @@ var Dungeon = /** @class */ (function () {
     };
     Dungeon.prototype.exportDot = function () {
         var body = '';
-        this.nodes.forEach(function (v, k) { body += k + ";\n"; });
-        this.nodes.forEach(function (v) { body += v.exportDot() + "\n"; });
+        this.nodes.forEach(function (v, k) {
+            body += k + ";\n";
+        });
+        this.nodes.forEach(function (v) {
+            body += v.exportDot() + "\n";
+        });
         return "digraph G {\n        " + body + "\n      }";
     };
     Dungeon.prototype.addNode = function () {

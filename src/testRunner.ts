@@ -1,5 +1,11 @@
+import {readFile as readFile_, writeFile as writeFile_} from 'fs';
+import {promisify} from 'util';
+
 import {Agent} from './game/Agent';
 import {Dungeon} from './game/Dungeon';
+
+const writeFile = promisify(writeFile_);
+const readFile = promisify(readFile_);
 
 class TestRunner {
   private dungeon: Dungeon;
@@ -7,10 +13,14 @@ class TestRunner {
 
   constructor() {}
 
-  runTest() {
+  async runTest(): Promise<void> {
     this.dungeon = new Dungeon();
 
     this.dungeon.generateLevel();
+
+    const graph = this.dungeon.exportDot();
+
+    await writeFile('out.dot', graph, 'utf8');
 
     return;
 
@@ -18,9 +28,9 @@ class TestRunner {
     // }
   }
 
-  runTests(runs: number) {
+  async runTests(runs: number): Promise<void> {
     for (let i = 0; i < runs; i++) {
-      this.runTest();
+      await this.runTest();
     }
   }
 }
@@ -28,7 +38,7 @@ class TestRunner {
 async function main(args: string[]): Promise<number> {
   const runner = new TestRunner();
 
-  runner.runTest();
+  await runner.runTest();
 
   return 0;
 }

@@ -35,21 +35,52 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var fs_1 = require("fs");
+var util_1 = require("util");
 var Dungeon_1 = require("./game/Dungeon");
+var writeFile = util_1.promisify(fs_1.writeFile);
+var readFile = util_1.promisify(fs_1.readFile);
 var TestRunner = /** @class */ (function () {
     function TestRunner() {
     }
     TestRunner.prototype.runTest = function () {
-        this.dungeon = new Dungeon_1.Dungeon();
-        this.dungeon.generateLevel();
-        return;
-        // while (this.agents.filter((agent) => agent.isAlive()).length > 1) {
-        // }
+        return __awaiter(this, void 0, void 0, function () {
+            var graph;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.dungeon = new Dungeon_1.Dungeon();
+                        this.dungeon.generateLevel();
+                        graph = this.dungeon.exportDot();
+                        return [4 /*yield*/, writeFile('out.dot', graph, 'utf8')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
     };
     TestRunner.prototype.runTests = function (runs) {
-        for (var i = 0; i < runs; i++) {
-            this.runTest();
-        }
+        return __awaiter(this, void 0, void 0, function () {
+            var i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < runs)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.runTest()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
     return TestRunner;
 }());
@@ -57,9 +88,14 @@ function main(args) {
     return __awaiter(this, void 0, void 0, function () {
         var runner;
         return __generator(this, function (_a) {
-            runner = new TestRunner();
-            runner.runTest();
-            return [2 /*return*/, 0];
+            switch (_a.label) {
+                case 0:
+                    runner = new TestRunner();
+                    return [4 /*yield*/, runner.runTest()];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, 0];
+            }
         });
     });
 }

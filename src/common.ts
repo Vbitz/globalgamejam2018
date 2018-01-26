@@ -3,7 +3,7 @@ export type Bag<T> = {
 };
 
 export function randomId(): string {
-  return (Math.random() * 100000000).toString(16);
+  return 'id_' + (Math.random() * 100000000).toString(16).replace('.', '_');
 }
 
 export function expect(): never {
