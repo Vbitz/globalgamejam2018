@@ -3,6 +3,11 @@ import * as THREE from 'three';
 import {Building} from './Building';
 import {expect, isPhysicalMaterial} from './common';
 
+enum Hello {
+  V = 'Hello',
+  B = 'World',
+}
+
 class GlobalGameJamGame {
   private renderer: THREE.WebGLRenderer;
 
