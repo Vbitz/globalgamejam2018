@@ -126,11 +126,11 @@ class GlobalGameJamGame {
       this.onResize();
     });
 
-    window.addEventListener('mousemove', (ev) => {
+    this.container.addEventListener('mousemove', (ev) => {
       this.onMouseMove(ev);
     });
 
-    window.addEventListener('click', (ev) => {
+    this.container.addEventListener('click', (ev) => {
       this.onMouseClick();
     });
 
@@ -139,7 +139,7 @@ class GlobalGameJamGame {
     this.update();
   }
 
-  private update() {
+  private update(frameTime?: number) {
     this.raycaster.setFromCamera(this.mouse, this.camera);
 
     var intersects = this.raycaster.intersectObjects(this.scene.children);
