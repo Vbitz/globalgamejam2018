@@ -9,15 +9,22 @@ export enum BuildingHoverState {
 const modelData = JSON.parse(
     require('fs').readFileSync(__dirname + '/../res/building.json', 'utf8'));
 
+interface LoadedMesh {
+  geometry: THREE.Geometry;
+  materials?: THREE.Material[];
+}
+
 export class Building extends THREE.Mesh {
-  material: THREE.MeshPhysicalMaterial;
+  material: THREE.MeshPhongMaterial[];
 
   state: BuildingHoverState;
+
+  static mesh:|null = null;
 
   constructor(floors: number) {
     const modelLoader = new THREE.JSONLoader();
     console.log(modelData);
-    const model = modelLoader.load(modelData);
+    const model = modelLoader.parse(modelData);
 
     console.log(model);
 
@@ -30,6 +37,8 @@ export class Building extends THREE.Mesh {
 
     this.state = BuildingHoverState.Deselected;
   }
+
+  static loadMesh() {}
 
   changeState(newState: BuildingHoverState) {
     this.state = newState;
