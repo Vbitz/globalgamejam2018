@@ -19,26 +19,23 @@ export class Building extends THREE.Mesh {
 
   state: BuildingHoverState;
 
-  static mesh:|null = null;
+  static mesh: LoadedMesh|null = null;
 
   constructor(floors: number) {
-    const modelLoader = new THREE.JSONLoader();
-    console.log(modelData);
-    const model = modelLoader.parse(modelData);
+    if (!Building.mesh) {
+      Building.loadMesh();
+    }
 
-    console.log(model);
+    super(
+        Building.mesh.geometry.clone(),
+        Building.mesh.materials.map((mat) => mat.clone()));
 
-    const mat =
-        new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
+    this.scale.set(0.5, 0.5, 0.5);
 
-    super(new THREE.CubeGeometry(1, floors / 2, 1), mat);
-
-    this.position.setY(floors / 4);
+    this.position.setY(-(floors));
 
     this.state = BuildingHoverState.Deselected;
   }
-
-  static loadMesh() {}
 
   changeState(newState: BuildingHoverState) {
     this.state = newState;
@@ -57,12 +54,19 @@ export class Building extends THREE.Mesh {
     return '0 kbps';
   }
 
+  private static loadMesh() {
+    const modelLoader = new THREE.JSONLoader();
+    console.log(modelData);
+    const model = modelLoader.parse(modelData);
+    this.mesh = model;
+  }
+
   private updateColor() {
     if (this.state === BuildingHoverState.Selected) {
-      this.material.color.setHex(0xabfe2d);
+      this.material[1].color.setHex(0xabfe2d);
     } else if (this.state === BuildingHoverState.Hovered) {
-      this.material.color.setHex(0x808080);
+      this.material[1].color.setHex(0x808080);
     } else if (this.state === BuildingHoverState.Deselected)
-      this.material.color.setHex(0xeaeaea);
+      this.material[1].color.setHex(0xa7a7a7);
   }
 }
