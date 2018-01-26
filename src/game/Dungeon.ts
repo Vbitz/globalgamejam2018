@@ -62,7 +62,7 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
-    const nodeCount = 20;
+    const nodeCount = 200;
 
     // Add random nodes
     const nodes: string[] = [];
@@ -74,7 +74,7 @@ export class Dungeon {
     }
 
     // Add random initial edges
-    const edgeCount = 5;
+    const edgeCount = 50;
 
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
