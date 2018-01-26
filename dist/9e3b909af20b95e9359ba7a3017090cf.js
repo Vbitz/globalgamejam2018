@@ -46097,11 +46097,6 @@ exports.__esModule = true;
 var THREE = require("three");
 var Building_1 = require("./Building");
 var common_1 = require("./common");
-var Hello;
-(function (Hello) {
-    Hello["V"] = "Hello";
-    Hello["B"] = "World";
-})(Hello || (Hello = {}));
 var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
         this.mouse = new THREE.Vector2();
