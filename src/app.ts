@@ -25,18 +25,27 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(5, 5, 5);
+    this.camera.position.set(0, 10, 10);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    const cube = new THREE.Mesh(
-        new THREE.CubeGeometry(1, 1, 1),
-        new THREE.MeshLambertMaterial({color: new THREE.Color(0x101010)}));
+    for (let x = -32; x < 32; x++) {
+      for (let z = -32; z < 32; z++) {
+        const cube = new THREE.Mesh(
+            new THREE.CubeGeometry(1, 5, 1),
+            new THREE.MeshLambertMaterial({color: new THREE.Color(0x101010)}));
+        cube.position.set(x * 2, 2.5, z * 2);
 
-    this.scene.add(cube);
+        this.scene.add(cube);
+      }
+    }
 
-    this.scene.add(new THREE.Mesh(
-        new THREE.PlaneGeometry(10, 10),
-        new THREE.MeshLambertMaterial({color: 0xeaeaea})));
+    const plane = new THREE.Mesh(
+        new THREE.PlaneGeometry(100, 100),
+        new THREE.MeshLambertMaterial({color: 0xeaeaea}));
+
+    plane.rotateX(THREE.Math.degToRad(-90));
+
+    this.scene.add(plane);
 
     const light = new THREE.AmbientLight(0xeaeaea);
 
