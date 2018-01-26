@@ -46067,6 +46067,7 @@ var common_1 = require("./common");
 var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
         this.mouse = new THREE.Vector2();
+        this.currentObject = null;
     }
     GlobalGameJamGame.prototype.init = function () {
         var _this = this;
@@ -46130,15 +46131,19 @@ var GlobalGameJamGame = /** @class */ (function () {
     GlobalGameJamGame.prototype.update = function () {
         this.raycaster.setFromCamera(this.mouse, this.camera);
         var intersects = this.raycaster.intersectObjects(this.scene.children);
-        intersects.forEach(function (intersect) {
-            var obj = intersect.object;
-            if (!(obj instanceof THREE.Mesh)) {
-                return;
-            }
-            if (obj.material instanceof THREE.MeshPhysicalMaterial) {
+        if (intersects.length > 0) {
+            intersects.sort(function (a, b) { return a.distance - b.distance; });
+            var obj = intersects[0].object;
+            if (obj instanceof THREE.Mesh &&
+                obj.material instanceof THREE.MeshPhysicalMaterial) {
+                if (this.currentObject &&
+                    this.currentObject.material instanceof THREE.MeshPhysicalMaterial) {
+                    this.currentObject.material.color.setHex(0xeaeaea);
+                }
                 obj.material.color.setHex(0xff0000);
+                this.currentObject = obj;
             }
-        });
+        }
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.update.bind(this));
     };

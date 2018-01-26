@@ -14,6 +14,8 @@ class GlobalGameJamGame {
 
   private mouse = new THREE.Vector2();
 
+  private currentObject: THREE.Mesh|null = null;
+
   constructor() {}
 
   init() {
@@ -112,15 +114,20 @@ class GlobalGameJamGame {
 
     var intersects = this.raycaster.intersectObjects(this.scene.children);
 
-    intersects.forEach((intersect) => {
-      const obj = intersect.object;
-      if (!(obj instanceof THREE.Mesh)) {
-        return;
-      }
-      if (obj.material instanceof THREE.MeshPhysicalMaterial) {
+    if (intersects.length > 0) {
+      intersects.sort((a, b) => a.distance - b.distance);
+
+      const obj = intersects[0].object;
+      if (obj instanceof THREE.Mesh &&
+          obj.material instanceof THREE.MeshPhysicalMaterial) {
+        if (this.currentObject &&
+            this.currentObject.material instanceof THREE.MeshPhysicalMaterial) {
+          this.currentObject.material.color.setHex(0xeaeaea);
+        }
         obj.material.color.setHex(0xff0000);
+        this.currentObject = obj;
       }
-    });
+    }
 
     this.renderer.render(this.scene, this.camera);
 
