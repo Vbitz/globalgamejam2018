@@ -49,6 +49,11 @@ export class Dungeon {
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
       const b = randArray(nodes);
+      this.addEdge(a, b);
+    }
+
+    while (true) {
+      let nodeList = Array.from(nodes);
     }
   }
 
