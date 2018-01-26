@@ -46073,7 +46073,7 @@ var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
         this.mouse = new THREE.Vector2();
         this.hoverObject = null;
-        this.currentObject = null;
+        this.selectedObject = null;
     }
     GlobalGameJamGame.prototype.init = function () {
         var _this = this;
@@ -46088,14 +46088,16 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.raycaster = new THREE.Raycaster();
         // Add basic building geometry.
         // TODO: Add Roads? Maybe a mesh or maybe something more complex.
-        var x1 = -54;
-        var z1 = -54;
-        for (var x = -32; x < 32; x++) {
-            z1 = -50;
-            for (var z = -32; z < 32; z++) {
+        var x1 = -10;
+        var z1 = -10;
+        for (var x = -8; x < 8; x++) {
+            z1 = -10;
+            for (var z = -8; z < 8; z++) {
                 var height = Math.random() * 4;
                 THREE.Math.clamp(height, 1, 4);
                 var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
+                mat.wireframe = true;
+                mat.wireframeLinewidth = 2.0;
                 var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
                 cube.position.set(x1, height / 2, z1);
                 this.scene.add(cube);
@@ -46145,7 +46147,7 @@ var GlobalGameJamGame = /** @class */ (function () {
             if (obj instanceof THREE.Mesh &&
                 obj.material instanceof THREE.MeshPhysicalMaterial &&
                 obj != this.hoverObject) {
-                if (this.hoverObject &&
+                if (this.hoverObject && this.hoverObject !== this.selectedObject &&
                     this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
                     this.hoverObject.material.color.setHex(0xeaeaea);
                 }
@@ -46187,8 +46189,12 @@ var GlobalGameJamGame = /** @class */ (function () {
         if (!common_1.isPhysicalMaterial(this.hoverObject.material)) {
             return;
         }
+        if (this.selectedObject &&
+            common_1.isPhysicalMaterial(this.selectedObject.material)) {
+            this.selectedObject.material.color.setHex(0xeaeaea);
+        }
+        this.selectedObject = this.hoverObject;
         this.hoverObject.material.color.setHex(0x1010ea);
-        this.currentObject = this.hoverObject;
     };
     return GlobalGameJamGame;
 }());

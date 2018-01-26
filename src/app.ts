@@ -15,7 +15,7 @@ class GlobalGameJamGame {
   private mouse = new THREE.Vector2();
 
   private hoverObject: THREE.Mesh|null = null;
-  private currentObject: THREE.Mesh|null = null;
+  private selectedObject: THREE.Mesh|null = null;
 
   constructor() {}
 
@@ -41,17 +41,19 @@ class GlobalGameJamGame {
 
     // TODO: Add Roads? Maybe a mesh or maybe something more complex.
 
-    let x1 = -54;
-    let z1 = -54;
+    let x1 = -10;
+    let z1 = -10;
 
-    for (let x = -32; x < 32; x++) {
-      z1 = -50;
+    for (let x = -8; x < 8; x++) {
+      z1 = -10;
 
-      for (let z = -32; z < 32; z++) {
+      for (let z = -8; z < 8; z++) {
         const height = Math.random() * 4;
         THREE.Math.clamp(height, 1, 4);
         const mat =
             new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
+        mat.wireframe = true;
+        mat.wireframeLinewidth = 2.0;
         const cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
         cube.position.set(x1, height / 2, z1);
 
@@ -125,7 +127,7 @@ class GlobalGameJamGame {
       if (obj instanceof THREE.Mesh &&
           obj.material instanceof THREE.MeshPhysicalMaterial &&
           obj != this.hoverObject) {
-        if (this.hoverObject &&
+        if (this.hoverObject && this.hoverObject !== this.selectedObject &&
             this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
           this.hoverObject.material.color.setHex(0xeaeaea);
         }
@@ -171,8 +173,12 @@ class GlobalGameJamGame {
     if (!isPhysicalMaterial(this.hoverObject.material)) {
       return;
     }
+    if (this.selectedObject &&
+        isPhysicalMaterial(this.selectedObject.material)) {
+      this.selectedObject.material.color.setHex(0xeaeaea);
+    }
+    this.selectedObject = this.hoverObject;
     this.hoverObject.material.color.setHex(0x1010ea);
-    this.currentObject = this.hoverObject;
   }
 }
 
