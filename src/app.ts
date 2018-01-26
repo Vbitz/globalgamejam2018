@@ -25,17 +25,20 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(0, 10, 10);
+    this.camera.position.set(0, 20, 3);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    for (let x = -32; x < 32; x++) {
-      for (let z = -32; z < 32; z++) {
+    for (let x = -50; x < 50; x += 1.5) {
+      for (let z = -50; z < 50; z += 1.5) {
+        if (Math.random() > 0.8) {
+          continue;
+        }
         const height = Math.random() * 4;
         THREE.Math.clamp(height, 0.5, 4);
         const mat =
-            new THREE.MeshPhongMaterial({color: new THREE.Color(0x202020)});
+            new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
         const cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
-        cube.position.set(x * 1.5, height / 2, z * 1.5);
+        cube.position.set(x, height / 2, z);
 
         this.scene.add(cube);
       }
@@ -43,7 +46,7 @@ class GlobalGameJamGame {
 
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(1000, 1000),
-        new THREE.MeshLambertMaterial({color: 0xeaeaea}));
+        new THREE.MeshLambertMaterial({color: 0x101010}));
 
     plane.rotateX(THREE.Math.degToRad(-90));
 

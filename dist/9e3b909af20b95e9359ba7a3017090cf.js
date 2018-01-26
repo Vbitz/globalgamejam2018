@@ -46075,19 +46075,22 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
-        this.camera.position.set(0, 10, 10);
+        this.camera.position.set(0, 20, 3);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-        for (var x = -32; x < 32; x++) {
-            for (var z = -32; z < 32; z++) {
+        for (var x = -50; x < 50; x += 1.5) {
+            for (var z = -50; z < 50; z += 1.5) {
+                if (Math.random() > 0.8) {
+                    continue;
+                }
                 var height = Math.random() * 4;
                 THREE.Math.clamp(height, 0.5, 4);
-                var mat = new THREE.MeshPhongMaterial({ color: new THREE.Color(0x202020) });
+                var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
                 var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
-                cube.position.set(x * 1.5, height / 2, z * 1.5);
+                cube.position.set(x, height / 2, z);
                 this.scene.add(cube);
             }
         }
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0xeaeaea }));
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0x101010 }));
         plane.rotateX(THREE.Math.degToRad(-90));
         this.scene.add(plane);
         var light = new THREE.AmbientLight(0xeaeaea);
