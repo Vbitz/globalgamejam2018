@@ -38,6 +38,8 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
+    console.log('Generating');
+
     const nodeCount = 100;
 
     // Add random nodes
@@ -67,10 +69,26 @@ export class Dungeon {
         const walkNodes = (node: string) => {
           const nodeObj = this.getNode(node) || expect();
 
-          nodeObj.
+          nodeObj.getEdgeTargets().map((target) => {
+            if (newGroup.indexOf(target) !== -1) {
+              return;
+            }
+
+            const targetIndex = nodeList.indexOf(target);
+
+            // Add the node to the group.
+            newGroup.push(target);
+
+            // Remove the node from the list.
+            nodeList.splice(targetIndex, 1);
+
+            walkNodes(target);
+          });
         };
 
         walkNodes(newGroup[0]);
+
+        groups.push(newGroup);
       }
 
       if (groups.length === 1) {
@@ -87,7 +105,7 @@ export class Dungeon {
   }
 
   exportDot(): string {
-    let body: string = '';
+    let body = '';
     this.nodes.forEach((v, k) => {body += `${k};\n`});
     this.nodes.forEach((v) => {body += `${v.exportDot()}\n`});
     return `digraph G {

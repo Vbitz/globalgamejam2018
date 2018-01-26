@@ -41,6 +41,10 @@ var TestRunner = /** @class */ (function () {
     }
     TestRunner.prototype.runTest = function () {
         this.dungeon = new Dungeon_1.Dungeon();
+        this.dungeon.generateLevel();
+        return;
+        // while (this.agents.filter((agent) => agent.isAlive()).length > 1) {
+        // }
     };
     TestRunner.prototype.runTests = function (runs) {
         for (var i = 0; i < runs; i++) {
@@ -54,7 +58,7 @@ function main(args) {
         var runner;
         return __generator(this, function (_a) {
             runner = new TestRunner();
-            runner.runTests(100);
+            runner.runTest();
             return [2 /*return*/, 0];
         });
     });

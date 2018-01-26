@@ -12,8 +12,10 @@ class TestRunner {
 
     this.dungeon.generateLevel();
 
-    while (this.agents.filter((agent) => agent.isAlive()).length > 1) {
-    }
+    return;
+
+    // while (this.agents.filter((agent) => agent.isAlive()).length > 1) {
+    // }
   }
 
   runTests(runs: number) {
@@ -26,7 +28,7 @@ class TestRunner {
 async function main(args: string[]): Promise<number> {
   const runner = new TestRunner();
 
-  runner.runTests(100);
+  runner.runTest();
 
   return 0;
 }
