@@ -10,7 +10,9 @@ class GlobalGameJamGame {
 
   private container: HTMLDivElement;
 
-  private projector: THREE.Projector;
+  private raycaster: THREE.Raycaster;
+
+  private mouse = new THREE.Vector2();
 
   constructor() {}
 
@@ -94,12 +96,27 @@ class GlobalGameJamGame {
       this.onResize();
     });
 
+    window.addEventListener('mousemove', (ev) => {
+      this.onMouseMove(ev);
+    });
+
     this.onResize();
 
     this.update();
   }
 
   private update() {
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+
+    var intersects = this.raycaster.intersectObjects(this.scene.children);
+
+    intersects.forEach((intersect) => {
+      const obj = intersect.object;
+      if (!obj instanceof THREE.Mesh) {
+        return;
+      }
+    });
+
     this.renderer.render(this.scene, this.camera);
 
     requestAnimationFrame(this.update.bind(this));
@@ -124,18 +141,9 @@ class GlobalGameJamGame {
     this.camera.updateProjectionMatrix();
   }
 
-  private onMouseClick(ev: MouseEvent) {
-    const mouse3D = new THREE.Vector3();
-    mouse3D.x = (ev.clientX / window.innerWidth) * 2 - 1;
-    mouse3D.y = -(ev.clientY / window.innerHeight) * 2 + 1;
-    mouse3D.z = 0.5;
-
-    const unprojectedVector =
-        this.projector.unprojectVector(mouse3D, this.camera);
-
-    const ray = new THREE.Ray(
-        this.camera.position,
-    )
+  private onMouseMove(ev: MouseEvent) {
+    this.mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
   }
 }
 

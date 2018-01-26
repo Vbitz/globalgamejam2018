@@ -46066,6 +46066,7 @@ var THREE = require("three");
 var common_1 = require("./common");
 var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
+        this.mouse = new THREE.Vector2();
     }
     GlobalGameJamGame.prototype.init = function () {
         var _this = this;
@@ -46119,10 +46120,21 @@ var GlobalGameJamGame = /** @class */ (function () {
         window.addEventListener('resize', function (ev) {
             _this.onResize();
         });
+        window.addEventListener('mousemove', function (ev) {
+            _this.onMouseMove(ev);
+        });
         this.onResize();
         this.update();
     };
     GlobalGameJamGame.prototype.update = function () {
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        var intersects = this.raycaster.intersectObjects(this.scene.children);
+        intersects.forEach(function (intersect) {
+            var obj = intersect.object;
+            if (!obj instanceof THREE.Mesh) {
+                return;
+            }
+        });
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.update.bind(this));
     };
@@ -46145,13 +46157,9 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
     };
-    GlobalGameJamGame.prototype.onMouseClick = function (ev) {
-        var mouse3D = new THREE.Vector3();
-        mouse3D.x = (ev.clientX / window.innerWidth) * 2 - 1;
-        mouse3D.y = -(ev.clientY / window.innerHeight) * 2 + 1;
-        mouse3D.z = 0.5;
-        var unprojectedVector = this.projector.unprojectVector(mouse3D, this.camera);
-        var ray = new THREE.Ray(this.camera.position);
+    GlobalGameJamGame.prototype.onMouseMove = function (ev) {
+        this.mouse.x = (ev.clientX / window.innerWidth) * 2 - 1;
+        this.mouse.y = -(ev.clientY / window.innerHeight) * 2 + 1;
     };
     return GlobalGameJamGame;
 }());
