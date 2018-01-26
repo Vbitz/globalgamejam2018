@@ -25,6 +25,8 @@ class GlobalGameJamGame {
 
     this.camera = new THREE.PerspectiveCamera();
 
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+
     this.camera.position.set(10, 10, 10);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
@@ -40,6 +42,14 @@ class GlobalGameJamGame {
 
     this.container.appendChild(this.renderer.domElement);
 
+    this.renderer.domElement.addEventListener('keypress', (ev) => {
+      this.onKeyPress(ev);
+    });
+
+    window.addEventListener('resize', (ev) => {
+      this.onResize(ev);
+    });
+
     this.update();
   }
 
@@ -47,6 +57,22 @@ class GlobalGameJamGame {
     this.renderer.render(this.scene, this.camera);
 
     requestAnimationFrame(this.update.bind(this));
+  }
+
+  private onKeyPress(ev: KeyboardEvent) {
+    if (ev.char === 'w') {
+      this.camera.position.add(new THREE.Vector3(0, 1, 0));
+    } else if (ev.char === 's') {
+    } else if (ev.char === 'a') {
+    } else if (ev.char === 'd') {
+    }
+  }
+
+  private onResize(ev: UIEvent) {
+    console.log('resize', window.innerWidth, window.innerHeight);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    this.camera.aspect = window.innerWidth / window.innerHeight;
   }
 }
 

@@ -46068,12 +46068,14 @@ var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
     }
     GlobalGameJamGame.prototype.init = function () {
+        var _this = this;
         this.container = document.querySelector('#container') || common_1.expect();
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setClearColor(new THREE.Color(0x6495ED));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
+        this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.position.set(10, 10, 10);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 2, 1), new THREE.MeshLambertMaterial({ color: new THREE.Color(0x101010) }));
@@ -46081,11 +46083,33 @@ var GlobalGameJamGame = /** @class */ (function () {
         var light = new THREE.AmbientLight(0xeaeaea);
         this.scene.add(light);
         this.container.appendChild(this.renderer.domElement);
+        this.renderer.domElement.addEventListener('keypress', function (ev) {
+            _this.onKeyPress(ev);
+        });
+        window.addEventListener('resize', function (ev) {
+            _this.onResize(ev);
+        });
         this.update();
     };
     GlobalGameJamGame.prototype.update = function () {
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.update.bind(this));
+    };
+    GlobalGameJamGame.prototype.onKeyPress = function (ev) {
+        if (ev.char === 'w') {
+            this.camera.position.add(new THREE.Vector3(0, 1, 0));
+        }
+        else if (ev.char === 's') {
+        }
+        else if (ev.char === 'a') {
+        }
+        else if (ev.char === 'd') {
+        }
+    };
+    GlobalGameJamGame.prototype.onResize = function (ev) {
+        console.log('resize', window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.camera.aspect = window.innerWidth / window.innerHeight;
     };
     return GlobalGameJamGame;
 }());
