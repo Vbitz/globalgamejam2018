@@ -1,4 +1,4 @@
-import {expect, randArray, randomId} from '../common';
+import {expect, rand, randArray, randomId} from '../common';
 
 class Edge {
   /**
@@ -21,10 +21,16 @@ class Node {
 
   private id: string = randomId();
 
+  private width = 0;
+  private height = 0;
+
   constructor(overrideId?: string) {
     if (overrideId) {
       this.id = overrideId;
     }
+
+    this.width = Math.random() * 4;
+    this.height = Math.random() * 4;
   }
 
   getId(): string {
@@ -50,7 +56,8 @@ class Node {
     if (this.difficulty > 0) {
       label = `Level ${this.difficulty}`;
     }
-    return `${this.id}[label=${JSON.stringify(label)}];`;
+    return `${this.id}[label=${JSON.stringify(label)}, shape=square, width=${
+        this.width}, height=${this.height}];`;
   }
 
   getEdgeTargets(): string[] {
