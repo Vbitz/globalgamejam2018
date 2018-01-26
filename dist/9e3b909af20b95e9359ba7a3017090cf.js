@@ -46182,29 +46182,6 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.screenCamera = new THREE.OrthographicCamera(-1, 1, 1, -1);
         this.screenCamera.position.setZ(100);
         this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
-        // Add basic building geometry.
-        // TODO: Add Roads? Maybe a mesh or maybe something more complex.
-        var x1 = -10;
-        var z1 = -10;
-        for (var x = -8; x < 8; x++) {
-            z1 = -10;
-            for (var z = -8; z < 8; z++) {
-                var height = Math.floor(Math.random() * 5);
-                THREE.Math.clamp(height, 2, 20);
-                var building = new Building_1.Building(height);
-                building.position.setX(x1);
-                building.position.setZ(z1);
-                this.scene.add(building);
-                z1 += 1;
-                if (z1 % 4 === 0) {
-                    z1 += 1;
-                }
-            }
-            x1 += 1;
-            if (x1 % 6 === 0) {
-                x1 += 1;
-            }
-        }
         var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshLambertMaterial({ color: 0x101010 }));
         plane.position.setX(-10);
         plane.position.setZ(-10);
@@ -46229,6 +46206,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.container.addEventListener('click', function (ev) {
             _this.onMouseClick();
         });
+        this.generateMap(32, 32);
         this.onResize();
         this.update();
     };
@@ -46297,6 +46275,7 @@ var GlobalGameJamGame = /** @class */ (function () {
             this.hoverObject = building;
         }
     };
+    GlobalGameJamGame.prototype.generateMap = function (width, height) { };
     return GlobalGameJamGame;
 }());
 document.addEventListener('DOMContentLoaded', function () {

@@ -3,6 +3,8 @@ import * as THREE from 'three';
 import {Building, BuildingHoverState} from './Building';
 import {expect} from './common';
 
+type Tile = Building|Road;
+
 class GlobalGameJamGame {
   private renderer: THREE.WebGLRenderer;
 
@@ -24,6 +26,8 @@ class GlobalGameJamGame {
 
   private screenScene: THREE.Scene;
   private screenCamera: THREE.OrthographicCamera;
+
+  private map: Tile[][];
 
   constructor() {}
 
@@ -64,37 +68,6 @@ class GlobalGameJamGame {
     this.screenCamera.position.setZ(100);
     this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    // Add basic building geometry.
-
-    // TODO: Add Roads? Maybe a mesh or maybe something more complex.
-
-    let x1 = -10;
-    let z1 = -10;
-
-    for (let x = -8; x < 8; x++) {
-      z1 = -10;
-
-      for (let z = -8; z < 8; z++) {
-        const height = Math.floor(Math.random() * 5);
-        THREE.Math.clamp(height, 2, 20);
-        const building = new Building(height);
-        building.position.setX(x1);
-        building.position.setZ(z1);
-
-        this.scene.add(building);
-
-        z1 += 1;
-        if (z1 % 4 === 0) {
-          z1 += 1;
-        }
-      }
-
-      x1 += 1;
-      if (x1 % 6 === 0) {
-        x1 += 1;
-      }
-    }
-
     const plane = new THREE.Mesh(
         new THREE.PlaneGeometry(100, 100),
         new THREE.MeshLambertMaterial({color: 0x101010}));
@@ -133,6 +106,8 @@ class GlobalGameJamGame {
     this.container.addEventListener('click', (ev) => {
       this.onMouseClick();
     });
+
+    this.generateMap(32, 32);
 
     this.onResize();
 
@@ -215,6 +190,8 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
       this.hoverObject = building;
     }
   }
+
+  private generateMap(width: number, height: number) {}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
