@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+
+import {Building} from './Building';
 import {expect, isPhysicalMaterial} from './common';
 
 class GlobalGameJamGame {
@@ -14,8 +16,8 @@ class GlobalGameJamGame {
 
   private mouse = new THREE.Vector2();
 
-  private hoverObject: THREE.Mesh|null = null;
-  private selectedObject: THREE.Mesh|null = null;
+  private hoverObject: Building|null = null;
+  private selectedObject: Building|null = null;
 
   constructor() {}
 
@@ -50,14 +52,11 @@ class GlobalGameJamGame {
       for (let z = -8; z < 8; z++) {
         const height = Math.random() * 4;
         THREE.Math.clamp(height, 1, 4);
-        const mat =
-            new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
-        mat.wireframe = true;
-        mat.wireframeLinewidth = 2.0;
-        const cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
-        cube.position.set(x1, height / 2, z1);
+        const building = new Building(height);
+        building.position.setX(x1);
+        building.position.setZ(z1);
 
-        this.scene.add(cube);
+        this.scene.add(building);
 
         z1 += 1;
         if (z1 % 4 === 0) {
@@ -124,15 +123,19 @@ class GlobalGameJamGame {
       intersects.sort((a, b) => a.distance - b.distance);
 
       const obj = intersects[0].object;
-      if (obj instanceof THREE.Mesh &&
-          obj.material instanceof THREE.MeshPhysicalMaterial &&
-          obj != this.hoverObject) {
+      if (obj instanceof Building && obj != this.hoverObject &&
+          obj != this.selectedObject) {
         if (this.hoverObject && this.hoverObject !== this.selectedObject &&
             this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
           this.hoverObject.material.color.setHex(0xeaeaea);
         }
         obj.material.color.setHex(0xff0000);
         this.hoverObject = obj;
+      } else if (!(obj instanceof Building)) {
+        if (this.hoverObject && this.hoverObject !== this.selectedObject) {
+          this.hoverObject.material.color.setHex(0xeaeaea);
+        }
+        this.hoverObject = null;
       }
     }
 

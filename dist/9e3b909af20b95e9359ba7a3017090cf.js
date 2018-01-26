@@ -46051,7 +46051,34 @@ var global = (1,eval)("this");
 
 })));
 
-},{}],6:[function(require,module,exports) {
+},{}],8:[function(require,module,exports) {
+"use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+exports.__esModule = true;
+var THREE = require("three");
+var Building = /** @class */ (function (_super) {
+    __extends(Building, _super);
+    function Building(height) {
+        var _this = this;
+        var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
+        _this = _super.call(this, new THREE.CubeGeometry(1, height, 1), mat) || this;
+        _this.position.setY(height / 2);
+        return _this;
+    }
+    return Building;
+}(THREE.Mesh));
+exports.Building = Building;
+
+},{"three":7}],6:[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 var THREE = require("three");
@@ -46068,6 +46095,7 @@ exports.isPhysicalMaterial = isPhysicalMaterial;
 "use strict";
 exports.__esModule = true;
 var THREE = require("three");
+var Building_1 = require("./Building");
 var common_1 = require("./common");
 var GlobalGameJamGame = /** @class */ (function () {
     function GlobalGameJamGame() {
@@ -46095,12 +46123,10 @@ var GlobalGameJamGame = /** @class */ (function () {
             for (var z = -8; z < 8; z++) {
                 var height = Math.random() * 4;
                 THREE.Math.clamp(height, 1, 4);
-                var mat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(0xeaeaea) });
-                mat.wireframe = true;
-                mat.wireframeLinewidth = 2.0;
-                var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
-                cube.position.set(x1, height / 2, z1);
-                this.scene.add(cube);
+                var building = new Building_1.Building(height);
+                building.position.setX(x1);
+                building.position.setZ(z1);
+                this.scene.add(building);
                 z1 += 1;
                 if (z1 % 4 === 0) {
                     z1 += 1;
@@ -46144,15 +46170,20 @@ var GlobalGameJamGame = /** @class */ (function () {
         if (intersects.length > 0) {
             intersects.sort(function (a, b) { return a.distance - b.distance; });
             var obj = intersects[0].object;
-            if (obj instanceof THREE.Mesh &&
-                obj.material instanceof THREE.MeshPhysicalMaterial &&
-                obj != this.hoverObject) {
+            if (obj instanceof Building_1.Building && obj != this.hoverObject &&
+                obj != this.selectedObject) {
                 if (this.hoverObject && this.hoverObject !== this.selectedObject &&
                     this.hoverObject.material instanceof THREE.MeshPhysicalMaterial) {
                     this.hoverObject.material.color.setHex(0xeaeaea);
                 }
                 obj.material.color.setHex(0xff0000);
                 this.hoverObject = obj;
+            }
+            else if (!(obj instanceof Building_1.Building)) {
+                if (this.hoverObject && this.hoverObject !== this.selectedObject) {
+                    this.hoverObject.material.color.setHex(0xeaeaea);
+                }
+                this.hoverObject = null;
             }
         }
         this.renderer.render(this.scene, this.camera);
@@ -46203,7 +46234,7 @@ document.addEventListener('DOMContentLoaded', function () {
     game.init();
 });
 
-},{"three":7,"./common":6}],0:[function(require,module,exports) {
+},{"three":7,"./Building":8,"./common":6}],0:[function(require,module,exports) {
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
 function Module() {
