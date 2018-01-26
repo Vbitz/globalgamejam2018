@@ -1,4 +1,4 @@
-import {randArray, randomId} from '../common';
+import {expect, randArray, randomId} from '../common';
 
 class Edge {
   constructor(private target: string) {}
@@ -28,6 +28,10 @@ class Node {
         this.edges.map((e) => `${this.getId()} -> ${e.getTarget()};`)
             .join('\n')}`;
   }
+
+  getEdgeTargets(): string[] {
+    return this.edges.map((edge) => edge.getTarget());
+  }
 }
 
 export class Dungeon {
@@ -53,7 +57,32 @@ export class Dungeon {
     }
 
     while (true) {
-      let nodeList = Array.from(nodes);
+      const groups: string[][] = [];
+
+      const nodeList = Array.from(nodes);
+
+      while (nodeList.length > 0) {
+        const newGroup = [nodeList.pop() || expect()];
+
+        const walkNodes = (node: string) => {
+          const nodeObj = this.getNode(node) || expect();
+
+          nodeObj.
+        };
+
+        walkNodes(newGroup[0]);
+      }
+
+      if (groups.length === 1) {
+        break;
+      } else {
+        groups.forEach((groupA) => {
+          const groupB = randArray(groups);
+          const randNodeA = randArray(groupA);
+          const randNodeB = randArray(groupB);
+          this.addEdge(randNodeA, randNodeB);
+        });
+      }
     }
   }
 
