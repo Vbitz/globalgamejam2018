@@ -1,4 +1,4 @@
-import {randomId} from '../common';
+import {randArray, randomId} from '../common';
 
 class Edge {
   constructor(private target: string) {}
@@ -35,6 +35,21 @@ export class Dungeon {
 
   generateLevel() {
     const nodeCount = 100;
+
+    // Add random nodes
+    const nodes: string[] = [];
+
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push(this.addNode());
+    }
+
+    // Add random initial edges
+    const edgeCount = 200;
+
+    for (let i = 0; i < edgeCount; i++) {
+      const a = randArray(nodes);
+      const b = randArray(nodes);
+    }
   }
 
   exportDot(): string {

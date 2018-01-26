@@ -9,3 +9,11 @@ export function randomId(): string {
 export function expect(): never {
   throw new Error('Expect failed');
 }
+
+export function rand(max: number): number {
+  return Math.floor(Math.random() * max);
+}
+
+export function randArray<T>(arr: T[]): T {
+  return arr[rand(arr.length)];
+}
