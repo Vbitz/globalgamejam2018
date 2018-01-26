@@ -10,6 +10,7 @@
   <style>
     body {
       font-family: sans-serif;
+      background-color: antiquewhite;
     }
 
     .container {
@@ -19,6 +20,25 @@
 
     h1 {
       text-decoration: underline;
+      color: brown;
+      font-family: serif;
+    }
+
+    h2 {
+      color: #7e451f;
+    }
+
+    .adventurerList {
+      column-count: 3;
+      padding: 0;
+      margin: 0;
+    }
+
+    .adventurer {
+      height: 100px;
+      border: 1px solid burlywood;
+      margin: 5px;
+      break-inside: avoid;
     }
   </style>
 </head>
@@ -27,7 +47,18 @@
   <div class="container">
     <h1>Indirect Dungeon Crawller</h1>
     <h2>Adventurers</h2>
-    <div class="adventurerList"></div>
+    <div class="adventurerList">
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+      <div class="adventurer"></div>
+    </div>
     <h2>Dungeon</h2>
     <div class="dungeonInfomation"></div>
     <h2>New Run</h2>
