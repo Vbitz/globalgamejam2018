@@ -1,6 +1,11 @@
 import {expect, randArray, randomId} from '../common';
 
 class Edge {
+  /**
+   * In seconds
+   */
+  walkTime: number;
+
   constructor(private target: string) {}
 
   getTarget(): string {
@@ -42,7 +47,7 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
-    const nodeCount = 500;
+    const nodeCount = 20;
 
     // Add random nodes
     const nodes: string[] = [];
@@ -52,7 +57,7 @@ export class Dungeon {
     }
 
     // Add random initial edges
-    const edgeCount = 200;
+    const edgeCount = 5;
 
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
