@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {LoadedMesh} from './common';
 
 export enum BuildingHoverState {
   Deselected,
@@ -8,11 +9,6 @@ export enum BuildingHoverState {
 
 const modelData = JSON.parse(
     require('fs').readFileSync(__dirname + '/../res/building.json', 'utf8'));
-
-interface LoadedMesh {
-  geometry: THREE.Geometry;
-  materials?: THREE.Material[];
-}
 
 export class Building extends THREE.Mesh {
   material: THREE.MeshPhongMaterial[];
@@ -62,9 +58,8 @@ export class Building extends THREE.Mesh {
 
   private static loadMesh() {
     const modelLoader = new THREE.JSONLoader();
-    console.log(modelData);
     const model = modelLoader.parse(modelData);
-    this.mesh = model;
+    Building.mesh = model;
   }
 
   private updateColor() {

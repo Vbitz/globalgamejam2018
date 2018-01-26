@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import {Building, BuildingHoverState} from './Building';
 import {expect} from './common';
+import {Road} from './Road';
 
 type Tile = Building|Road;
 
@@ -191,7 +192,9 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
     }
   }
 
-  private generateMap(width: number, height: number) {}
+  private generateMap(width: number, height: number) {
+    const hasBuilding: boolean[][] = [];
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

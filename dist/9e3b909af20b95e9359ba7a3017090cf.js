@@ -46111,9 +46111,8 @@ var Building = /** @class */function (_super) {
   };
   Building.loadMesh = function () {
     var modelLoader = new THREE.JSONLoader();
-    console.log(modelData);
     var model = modelLoader.parse(modelData);
-    this.mesh = model;
+    Building.mesh = model;
   };
   Building.prototype.updateColor = function () {
     if (this.state === BuildingHoverState.Selected) {
@@ -46275,7 +46274,9 @@ var GlobalGameJamGame = /** @class */ (function () {
             this.hoverObject = building;
         }
     };
-    GlobalGameJamGame.prototype.generateMap = function (width, height) { };
+    GlobalGameJamGame.prototype.generateMap = function (width, height) {
+        var hasBuilding = [];
+    };
     return GlobalGameJamGame;
 }());
 document.addEventListener('DOMContentLoaded', function () {
