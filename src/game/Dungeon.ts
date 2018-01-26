@@ -24,20 +24,26 @@ class Node {
   }
 
   exportDot(): string {
-    return '';
+    return `${
+        this.edges.map((e) => `${this.getId()} -> ${e.getTarget()};`)
+            .join('\n')}`;
   }
 }
 
 export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
-  generateLevel() {}
+  generateLevel() {
+    const nodeCount = 100;
+  }
 
   exportDot(): string {
     let body: string = '';
+    this.nodes.forEach((v, k) => {body += `${k};\n`});
+    this.nodes.forEach((v) => {body += `${v.exportDot()}\n`});
     return `digraph G {
-      ${body}
-    }`
+        ${body}
+      }`
   }
 
   private addNode(): string {
@@ -49,6 +55,17 @@ export class Dungeon {
   private addEdge(from: string, to: string) {
     const a = this.getNode(from);
     const b = this.getNode(to);
+
+    if (!a) {
+      throw new Error(`from{${from}} not found.`)
+    }
+
+    if (!b) {
+      throw new Error(`to{${to}} not found.`)
+    }
+
+    a.addEdgeTo(to);
+    b.addEdgeTo(from);
   }
 
   private getNode(id: string): Node|null {
