@@ -46215,7 +46215,7 @@ var GlobalGameJamGame = /** @class */ (function () {
             document.querySelector('#buildingInfoPanel') || common_1.expect();
         this.renderer =
             new THREE.WebGLRenderer({ antialias: true, devicePixelRatio: 128 });
-        this.renderer.setClearColor(new THREE.Color(0x6495ED));
+        this.renderer.setClearColor(new THREE.Color(0x101010));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera();
@@ -46228,11 +46228,6 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.screenCamera = new THREE.OrthographicCamera(-1, 1, 1, -1);
         this.screenCamera.position.setZ(100);
         this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshLambertMaterial({ color: 0x101010 }));
-        plane.position.setX(-10);
-        plane.position.setZ(-10);
-        plane.rotateX(THREE.Math.degToRad(-90));
-        this.scene.add(plane);
         var light = new THREE.AmbientLight(0xeaeaea);
         this.scene.add(light);
         var directionLight = new THREE.DirectionalLight(0xeaeaea);
@@ -46326,11 +46321,11 @@ var GlobalGameJamGame = /** @class */ (function () {
         for (var x = 0; x < width; x++) {
             hasBuilding.push([]);
             for (var y = 0; y < height; y++) {
-                if (x % 5 === 0 || y % 5 === 0) {
-                    hasBuilding[x].push(true);
+                if (x % 4 === 0 || y % 4 === 0) {
+                    hasBuilding[x].push(false);
                 }
                 else {
-                    hasBuilding[x].push(false);
+                    hasBuilding[x].push(true);
                 }
             }
         }
@@ -46339,16 +46334,16 @@ var GlobalGameJamGame = /** @class */ (function () {
             this.map.push([]);
             for (var y = 0; y < height; y++) {
                 if (hasBuilding[x][y]) {
-                    var newBuilding = new Building_1.Building(5);
-                    newBuilding.position.setX(x);
-                    newBuilding.position.setZ(y);
+                    var newBuilding = new Building_1.Building(1);
+                    newBuilding.position.setX(x - (width / 2));
+                    newBuilding.position.setZ(y - (height / 2));
                     this.scene.add(newBuilding);
                     this.map[x].push(newBuilding);
                 }
                 else {
                     var newRoad = new Road_1.Road(true, true, true, true);
-                    newRoad.position.setX(x);
-                    newRoad.position.setZ(y);
+                    newRoad.position.setX(x - (width / 2));
+                    newRoad.position.setZ(y - (height / 2));
                     this.scene.add(newRoad);
                     this.map[x].push(newRoad);
                 }

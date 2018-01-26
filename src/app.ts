@@ -41,7 +41,7 @@ class GlobalGameJamGame {
     this.renderer =
         new THREE.WebGLRenderer({antialias: true, devicePixelRatio: 128});
 
-    this.renderer.setClearColor(new THREE.Color(0x6495ED));
+    this.renderer.setClearColor(new THREE.Color(0x101010));
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -68,17 +68,6 @@ class GlobalGameJamGame {
 
     this.screenCamera.position.setZ(100);
     this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    const plane = new THREE.Mesh(
-        new THREE.PlaneGeometry(100, 100),
-        new THREE.MeshLambertMaterial({color: 0x101010}));
-
-    plane.position.setX(-10);
-    plane.position.setZ(-10);
-
-    plane.rotateX(THREE.Math.degToRad(-90));
-
-    this.scene.add(plane);
 
     const light = new THREE.AmbientLight(0xeaeaea);
 
@@ -198,10 +187,10 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
     for (let x = 0; x < width; x++) {
       hasBuilding.push([]);
       for (let y = 0; y < height; y++) {
-        if (x % 5 === 0 || y % 5 === 0) {
-          hasBuilding[x].push(true);
-        } else {
+        if (x % 4 === 0 || y % 4 === 0) {
           hasBuilding[x].push(false);
+        } else {
+          hasBuilding[x].push(true);
         }
       }
     }
@@ -212,15 +201,15 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
       this.map.push([]);
       for (let y = 0; y < height; y++) {
         if (hasBuilding[x][y]) {
-          const newBuilding = new Building(5);
-          newBuilding.position.setX(x);
-          newBuilding.position.setZ(y);
+          const newBuilding = new Building(1);
+          newBuilding.position.setX(x - (width / 2));
+          newBuilding.position.setZ(y - (height / 2));
           this.scene.add(newBuilding);
           this.map[x].push(newBuilding);
         } else {
           const newRoad = new Road(true, true, true, true);
-          newRoad.position.setX(x);
-          newRoad.position.setZ(y);
+          newRoad.position.setX(x - (width / 2));
+          newRoad.position.setZ(y - (height / 2));
           this.scene.add(newRoad);
           this.map[x].push(newRoad);
         }
