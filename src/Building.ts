@@ -27,12 +27,24 @@ export class Building extends THREE.Mesh {
     this.updateColor();
   }
 
+  getBuildingId(): string {
+    return '{13-2321-13}';
+  }
+
+  getBuildingConnected(): boolean {
+    return false;
+  }
+
+  getBuildingBandwidth(): string {
+    return '0 kbps';
+  }
+
   private updateColor() {
     if (this.state === BuildingHoverState.Selected) {
-      this.material.color.setHex(0x1010ea);
+      this.material.color.setHex(0xabfe2d);
     } else if (this.state === BuildingHoverState.Hovered) {
-      this.material.color.setHex(0xea1010);
+      this.material.color.setHex(0x808080);
     } else if (this.state === BuildingHoverState.Deselected)
-      [this.material.color.setHex(0xeaeaea);]
+      this.material.color.setHex(0xeaeaea);
   }
 }

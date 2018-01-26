@@ -200,9 +200,9 @@ class GlobalGameJamGame {
     this.selectedObject = this.hoverObject;
     this.selectedObject.changeState(BuildingHoverState.Selected);
     this.buildingInfoPanel.innerText = `=== BUILDING INFO PANEL ===
-BLDID     = ${Math.random()}
-CONNECT   = ${true ? 'TRUE' : 'FALSE'}
-BANDWIDTH = ${Math.floor(Math.random() * 4096)} kbps`;
+BLDID     = ${this.selectedObject.getBuildingId()}
+CONNECT   = ${this.selectedObject.getBuildingConnected() ? 'TRUE' : 'FALSE'}
+BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
   }
 
   private onHoverBuilding(building: Building) {

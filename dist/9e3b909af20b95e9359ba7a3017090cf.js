@@ -46085,15 +46085,24 @@ var Building = /** @class */ (function (_super) {
         this.state = newState;
         this.updateColor();
     };
+    Building.prototype.getBuildingId = function () {
+        return '{13-2321-13}';
+    };
+    Building.prototype.getBuildingConnected = function () {
+        return false;
+    };
+    Building.prototype.getBuildingBandwidth = function () {
+        return '0 kbps';
+    };
     Building.prototype.updateColor = function () {
         if (this.state === BuildingHoverState.Selected) {
-            this.material.color.setHex(0x1010ea);
+            this.material.color.setHex(0xabfe2d);
         }
         else if (this.state === BuildingHoverState.Hovered) {
-            this.material.color.setHex(0xea1010);
+            this.material.color.setHex(0x808080);
         }
         else if (this.state === BuildingHoverState.Deselected)
-            [this.material.color.setHex(0xeaeaea)];
+            this.material.color.setHex(0xeaeaea);
     };
     return Building;
 }(THREE.Mesh));
@@ -46242,7 +46251,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         }
         this.selectedObject = this.hoverObject;
         this.selectedObject.changeState(Building_1.BuildingHoverState.Selected);
-        this.buildingInfoPanel.innerText = "=== BUILDING INFO PANEL ===\nBLDID     = " + Math.random() + "\nCONNECT   = " + (true ? 'TRUE' : 'FALSE') + "\nBANDWIDTH = " + Math.floor(Math.random() * 4096) + " kbps";
+        this.buildingInfoPanel.innerText = "=== BUILDING INFO PANEL ===\nBLDID     = " + this.selectedObject.getBuildingId() + "\nCONNECT   = " + (this.selectedObject.getBuildingConnected() ? 'TRUE' : 'FALSE') + "\nBANDWIDTH = " + this.selectedObject.getBuildingBandwidth();
     };
     GlobalGameJamGame.prototype.onHoverBuilding = function (building) {
         if (building != this.hoverObject && building != this.selectedObject) {
