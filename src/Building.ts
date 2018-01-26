@@ -11,13 +11,13 @@ export class Building extends THREE.Mesh {
 
   state: BuildingHoverState;
 
-  constructor(height: number) {
+  constructor(floors: number) {
     const mat =
         new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
 
-    super(new THREE.CubeGeometry(1, height, 1), mat);
+    super(new THREE.CubeGeometry(1, floors / 2, 1), mat);
 
-    this.position.setY(height / 2);
+    this.position.setY(floors / 4);
 
     this.state = BuildingHoverState.Deselected;
   }
@@ -28,7 +28,7 @@ export class Building extends THREE.Mesh {
   }
 
   getBuildingId(): string {
-    return '{13-2321-13}';
+    return `{${12}-${1234}-${13}}`;
   }
 
   getBuildingConnected(): boolean {
