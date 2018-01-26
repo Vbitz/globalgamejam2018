@@ -14,11 +14,18 @@ class Edge {
 }
 
 class Node {
+  /** Distance from starting node */
+  difficulty: number;
+
   private edges: Edge[] = [];
 
   private id: string = randomId();
 
-  constructor() {}
+  constructor(overrideId?: string) {
+    if (overrideId) {
+      this.id = overrideId;
+    }
+  }
 
   getId(): string {
     return this.id;
@@ -51,6 +58,8 @@ export class Dungeon {
 
     // Add random nodes
     const nodes: string[] = [];
+
+    nodes.push(this.addNode('entry'));
 
     for (let i = 0; i < nodeCount; i++) {
       nodes.push(this.addNode());
@@ -115,7 +124,7 @@ export class Dungeon {
     let body = '';
 
     this.nodes.forEach((v, k) => {
-      body += `${k};\n`;
+      body += `${k}[label=${JSON.stringify('Level 2')}];\n`;
     });
 
     this.nodes.forEach((v) => {
@@ -127,8 +136,8 @@ export class Dungeon {
       }`;
   }
 
-  private addNode(): string {
-    const newNode = new Node();
+  private addNode(overrideId?: string): string {
+    const newNode = new Node(overrideId);
     this.nodes.set(newNode.getId(), newNode);
     return newNode.getId();
   }
