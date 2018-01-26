@@ -15,7 +15,7 @@ class Edge {
 
 class Node {
   /** Distance from starting node */
-  difficulty: number;
+  difficulty: number = -1;
 
   private edges: Edge[] = [];
 
@@ -39,10 +39,18 @@ class Node {
     return this.edges.filter((edge) => edge.getTarget() === target).length > 0;
   }
 
-  exportDot(): string {
+  exportDotEdges(): string {
     return `${
         this.edges.map((e) => `${this.getId()} -> ${e.getTarget()};`)
             .join('\n')}`;
+  }
+
+  exportDotNode(): string {
+    let label = this.getId();
+    if (this.difficulty > 0) {
+      label = `Level ${this.difficulty}`;
+    }
+    return `${this.id}[label=${JSON.stringify(label)}];`;
   }
 
   getEdgeTargets(): string[] {
@@ -118,17 +126,30 @@ export class Dungeon {
         });
       }
     }
+
+    const setDifficulty = (node: string, level: number) => {
+      const nodeObj = this.getNode(node) || expect();
+      if (nodeObj.difficulty > 0) {
+        return;
+      }
+      nodeObj.getEdgeTargets().forEach(
+          (edge) => {
+
+          });
+    };
+
+    setDifficulty('entry', 0);
   }
 
   exportDot(): string {
     let body = '';
 
     this.nodes.forEach((v, k) => {
-      body += `${k}[label=${JSON.stringify('Level 2')}];\n`;
+      body += `${v.exportDotNode()}\n`;
     });
 
     this.nodes.forEach((v) => {
-      body += `${v.exportDot()}\n`;
+      body += `${v.exportDotEdges()}\n`;
     });
 
     return `digraph G {
