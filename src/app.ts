@@ -20,6 +20,8 @@ class GlobalGameJamGame {
   private hoverObject: Building|null = null;
   private selectedObject: Building|null = null;
 
+  private mainTarget: THREE.WebGLRenderTarget;
+
   constructor() {}
 
   init() {
@@ -28,7 +30,8 @@ class GlobalGameJamGame {
     this.buildingInfoPanel =
         document.querySelector('#buildingInfoPanel') || expect();
 
-    this.renderer = new THREE.WebGLRenderer({antialias: true});
+    this.renderer =
+        new THREE.WebGLRenderer({antialias: true, devicePixelRatio: 128});
 
     this.renderer.setClearColor(new THREE.Color(0x6495ED));
 
@@ -42,6 +45,8 @@ class GlobalGameJamGame {
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.raycaster = new THREE.Raycaster();
+
+    this.mainTarget = new THREE.WebGLRenderTarget(640, 480);
 
     // Add basic building geometry.
 
@@ -138,7 +143,7 @@ class GlobalGameJamGame {
       }
     }
 
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera, this.mainTarget);
 
     requestAnimationFrame(this.update.bind(this));
   }
@@ -177,8 +182,9 @@ class GlobalGameJamGame {
     this.selectedObject = this.hoverObject;
     this.selectedObject.changeState(BuildingHoverState.Selected);
     this.buildingInfoPanel.innerText = `=== BUILDING INFO PANEL ===
-BLDID  =${Math.random()}
-CONNECT=${true ? 'TRUE' : 'FALSE'}`;
+BLDID     = ${Math.random()}
+CONNECT   = ${true ? 'TRUE' : 'FALSE'}
+BANDWIDTH = ${Math.floor(Math.random() * 4096)} kbps`;
   }
 
   private onHoverBuilding(building: Building) {

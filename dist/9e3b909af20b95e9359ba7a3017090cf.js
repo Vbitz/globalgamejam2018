@@ -46124,7 +46124,8 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.container = document.querySelector('#container') || common_1.expect();
         this.buildingInfoPanel =
             document.querySelector('#buildingInfoPanel') || common_1.expect();
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer =
+            new THREE.WebGLRenderer({ antialias: true, devicePixelRatio: 128 });
         this.renderer.setClearColor(new THREE.Color(0x6495ED));
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.scene = new THREE.Scene();
@@ -46132,6 +46133,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.position.set(0, 10, 5);
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         this.raycaster = new THREE.Raycaster();
+        this.mainTarget = new THREE.WebGLRenderTarget(640, 480);
         // Add basic building geometry.
         // TODO: Add Roads? Maybe a mesh or maybe something more complex.
         var x1 = -10;
@@ -46199,7 +46201,7 @@ var GlobalGameJamGame = /** @class */ (function () {
                 this.hoverObject = null;
             }
         }
-        this.renderer.render(this.scene, this.camera);
+        this.renderer.render(this.scene, this.camera, this.mainTarget);
         requestAnimationFrame(this.update.bind(this));
     };
     GlobalGameJamGame.prototype.onKeyPress = function (ev) {
@@ -46234,7 +46236,7 @@ var GlobalGameJamGame = /** @class */ (function () {
         }
         this.selectedObject = this.hoverObject;
         this.selectedObject.changeState(Building_1.BuildingHoverState.Selected);
-        this.buildingInfoPanel.innerText = "=== BUILDING INFO PANEL ===\nBLDID  =" + Math.random() + "\nCONNECT=" + (true ? 'TRUE' : 'FALSE');
+        this.buildingInfoPanel.innerText = "=== BUILDING INFO PANEL ===\nBLDID     = " + Math.random() + "\nCONNECT   = " + (true ? 'TRUE' : 'FALSE') + "\nBANDWIDTH = " + Math.floor(Math.random() * 4096) + " kbps";
     };
     GlobalGameJamGame.prototype.onHoverBuilding = function (building) {
         if (building != this.hoverObject && building != this.selectedObject) {
