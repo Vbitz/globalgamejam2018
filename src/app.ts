@@ -207,7 +207,18 @@ BANDWIDTH = ${this.selectedObject.getBuildingBandwidth()}`;
           this.scene.add(newBuilding);
           this.map[x].push(newBuilding);
         } else {
-          const newRoad = new Road(true, true, true, true);
+          const up =
+              hasBuilding[x] ? (hasBuilding[x][y - 1] ? true : false) : true;
+          const down =
+              hasBuilding[x] ? (hasBuilding[x][y + 1] ? true : false) : true;
+          const left = hasBuilding[x - 1] ?
+              (hasBuilding[x - 1][y] ? true : false) :
+              true;
+          const right = hasBuilding[x + 1] ?
+              (hasBuilding[x + 1][y] ? true : false) :
+              true;
+
+          const newRoad = new Road(up, down, left, right);
           newRoad.position.setX(x - (width / 2));
           newRoad.position.setZ(y - (height / 2));
           this.scene.add(newRoad);
