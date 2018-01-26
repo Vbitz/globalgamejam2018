@@ -46079,16 +46079,23 @@ var GlobalGameJamGame = /** @class */ (function () {
         this.camera.lookAt(new THREE.Vector3(0, 0, 0));
         for (var x = -32; x < 32; x++) {
             for (var z = -32; z < 32; z++) {
-                var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 5, 1), new THREE.MeshLambertMaterial({ color: new THREE.Color(0x101010) }));
-                cube.position.set(x * 2, 2.5, z * 2);
+                var height = Math.random() * 4;
+                THREE.Math.clamp(height, 0.5, 4);
+                var mat = new THREE.MeshPhongMaterial({ color: new THREE.Color(0x202020) });
+                var cube = new THREE.Mesh(new THREE.CubeGeometry(1, height, 1), mat);
+                cube.position.set(x * 1.5, height / 2, z * 1.5);
                 this.scene.add(cube);
             }
         }
-        var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), new THREE.MeshLambertMaterial({ color: 0xeaeaea }));
+        var plane = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshLambertMaterial({ color: 0xeaeaea }));
         plane.rotateX(THREE.Math.degToRad(-90));
         this.scene.add(plane);
         var light = new THREE.AmbientLight(0xeaeaea);
         this.scene.add(light);
+        var directionLight = new THREE.DirectionalLight(0xeaeaea);
+        directionLight.lookAt(new THREE.Vector3(0, 0, 0));
+        directionLight.position.set(20, 20, -20);
+        this.scene.add(directionLight);
         this.container.appendChild(this.renderer.domElement);
         document.body.addEventListener('keypress', function (ev) {
             _this.onKeyPress(ev);
@@ -46105,16 +46112,16 @@ var GlobalGameJamGame = /** @class */ (function () {
     };
     GlobalGameJamGame.prototype.onKeyPress = function (ev) {
         if (ev.key === 'w') {
-            this.camera.position.add(new THREE.Vector3(0, 0, 1));
-        }
-        else if (ev.key === 's') {
             this.camera.position.add(new THREE.Vector3(0, 0, -1));
         }
+        else if (ev.key === 's') {
+            this.camera.position.add(new THREE.Vector3(0, 0, 1));
+        }
         else if (ev.key === 'a') {
-            this.camera.position.add(new THREE.Vector3(1, 0, 0));
+            this.camera.position.add(new THREE.Vector3(-1, 0, 0));
         }
         else if (ev.key === 'd') {
-            this.camera.position.add(new THREE.Vector3(-1, 0, 0));
+            this.camera.position.add(new THREE.Vector3(1, 0, 0));
         }
     };
     GlobalGameJamGame.prototype.onResize = function () {
