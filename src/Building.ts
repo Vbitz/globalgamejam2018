@@ -35,6 +35,8 @@ export class Building extends THREE.Mesh {
     this.position.setY(-(floors));
 
     this.state = BuildingHoverState.Deselected;
+
+    this.updateColor();
   }
 
   changeState(newState: BuildingHoverState) {
@@ -66,7 +68,8 @@ export class Building extends THREE.Mesh {
       this.material[1].color.setHex(0xabfe2d);
     } else if (this.state === BuildingHoverState.Hovered) {
       this.material[1].color.setHex(0x808080);
-    } else if (this.state === BuildingHoverState.Deselected)
-      this.material[1].color.setHex(0xa7a7a7);
+    } else if (this.state === BuildingHoverState.Deselected) {
+      this.material[1].color.setHex(0x575757);
+    }
   }
 }

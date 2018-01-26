@@ -65,9 +65,7 @@ require = (function (modules, cache, entry) {
 
   // Override the current require with this new one
   return newRequire;
-})({5:[function(require,module,exports) {
-
-},{}],7:[function(require,module,exports) {
+})({7:[function(require,module,exports) {
 var global = (1,eval)("this");
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -46053,6 +46051,8 @@ var global = (1,eval)("this");
 
 })));
 
+},{}],5:[function(require,module,exports) {
+
 },{}],3:[function(require,module,exports) {
 "use strict";
 
@@ -46092,6 +46092,7 @@ var Building = /** @class */function (_super) {
     _this.scale.set(0.5, 0.5, 0.5);
     _this.position.setY(-floors);
     _this.state = BuildingHoverState.Deselected;
+    _this.updateColor();
     return _this;
   }
   Building.prototype.changeState = function (newState) {
@@ -46118,13 +46119,15 @@ var Building = /** @class */function (_super) {
       this.material[1].color.setHex(0xabfe2d);
     } else if (this.state === BuildingHoverState.Hovered) {
       this.material[1].color.setHex(0x808080);
-    } else if (this.state === BuildingHoverState.Deselected) this.material[1].color.setHex(0xa7a7a7);
+    } else if (this.state === BuildingHoverState.Deselected) {
+      this.material[1].color.setHex(0x575757);
+    }
   };
   Building.mesh = null;
   return Building;
 }(THREE.Mesh);
 exports.Building = Building;
-},{"fs":5,"three":7}],4:[function(require,module,exports) {
+},{"three":7,"fs":5}],4:[function(require,module,exports) {
 "use strict";
 exports.__esModule = true;
 function expect() {
@@ -46171,8 +46174,8 @@ var GlobalGameJamGame = /** @class */ (function () {
         for (var x = -8; x < 8; x++) {
             z1 = -10;
             for (var z = -8; z < 8; z++) {
-                var height = Math.random() * 4;
-                THREE.Math.clamp(height, 1, 4);
+                var height = Math.floor(Math.random() * 5);
+                THREE.Math.clamp(height, 2, 20);
                 var building = new Building_1.Building(height);
                 building.position.setX(x1);
                 building.position.setZ(z1);
@@ -46286,7 +46289,7 @@ document.addEventListener('DOMContentLoaded', function () {
     game.init();
 });
 
-},{"./Building":3,"./common":4,"three":7}],0:[function(require,module,exports) {
+},{"three":7,"./Building":3,"./common":4}],0:[function(require,module,exports) {
 var global = (1, eval)('this');
 var OldModule = module.bundle.Module;
 function Module() {

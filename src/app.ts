@@ -75,8 +75,8 @@ class GlobalGameJamGame {
       z1 = -10;
 
       for (let z = -8; z < 8; z++) {
-        const height = Math.random() * 4;
-        THREE.Math.clamp(height, 1, 4);
+        const height = Math.floor(Math.random() * 5);
+        THREE.Math.clamp(height, 2, 20);
         const building = new Building(height);
         building.position.setX(x1);
         building.position.setZ(z1);
