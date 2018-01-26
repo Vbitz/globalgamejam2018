@@ -62,7 +62,7 @@ export class Dungeon {
   private nodes: Map<string, Node> = new Map();
 
   generateLevel() {
-    const nodeCount = 20;
+    const nodeCount = 200;
 
     // Add random nodes
     const nodes: string[] = [];
@@ -74,14 +74,16 @@ export class Dungeon {
     }
 
     // Add random initial edges
-    const edgeCount = 5;
+    const edgeCount = 25;
 
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
       const b = randArray(nodes);
+
       this.addEdge(a, b);
     }
 
+    // Keep connecting groups together until there is 1 group.
     while (true) {
       const groups: string[][] = [];
 
@@ -120,8 +122,10 @@ export class Dungeon {
       } else {
         groups.forEach((groupA) => {
           const groupB = randArray(groups);
+
           const randNodeA = randArray(groupA);
           const randNodeB = randArray(groupB);
+
           this.addEdge(randNodeA, randNodeB);
         });
       }
