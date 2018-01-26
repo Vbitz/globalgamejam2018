@@ -12,6 +12,12 @@ export class Building extends THREE.Mesh {
   state: BuildingHoverState;
 
   constructor(floors: number) {
+    const modelLoader = new THREE.JSONLoader();
+    const model = modelLoader.parse(JSON.parse(require('fs').readFileSync(
+        __dirname + '../res/building.json', 'utf8')));
+
+    console.log(model);
+
     const mat =
         new THREE.MeshPhysicalMaterial({color: new THREE.Color(0xeaeaea)});
 
