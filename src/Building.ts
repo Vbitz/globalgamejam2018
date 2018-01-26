@@ -81,5 +81,17 @@ export class Building extends THREE.Mesh {
     } else {
       this.material[2].color.setHex(0xea1010);
     }
+
+    const buildingActivityLevels = [0x808080, 0x808080, 0x808080];
+
+    const activityLevel = Math.floor(Math.random() * 3) + 1;
+
+    for (let i = 0; i < 3; i++) {
+      if (activityLevel > i) {
+        this.material[3 + i].color.setHex(buildingActivityLevels[i]);
+      } else {
+        this.material[3 + i].color.setHex(0x404040);
+      }
+    }
   }
 }
