@@ -1,3 +1,5 @@
+import {randomId} from '../common';
+
 class Edge {
   constructor(private target: string) {}
 
@@ -11,12 +13,18 @@ class Node {
 
   private id: string = randomId();
 
-  constructor() {
-    this.id
+  constructor() {}
+
+  getId(): string {
+    return this.id;
   }
 
   addEdgeTo(target: string) {
     this.edges.push(new Edge(target));
+  }
+
+  exportDot(): string {
+    return '';
   }
 }
 
@@ -25,7 +33,25 @@ export class Dungeon {
 
   generateLevel() {}
 
-  private addNode(): string {}
+  exportDot(): string {
+    let body: string = '';
+    return `digraph G {
+      ${body}
+    }`
+  }
 
-  private addEdge(from: string, to: string) {}
+  private addNode(): string {
+    const newNode = new Node();
+    this.nodes.set(newNode.getId(), newNode);
+    return newNode.getId();
+  }
+
+  private addEdge(from: string, to: string) {
+    const a = this.getNode(from);
+    const b = this.getNode(to);
+  }
+
+  private getNode(id: string): Node|null {
+    return this.nodes.get(id) || null;
+  }
 }
