@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {AmbientLight, DirectionalLight} from 'three';
+import {AmbientLight, Color, DirectionalLight} from 'three';
 
 import {expect, LoadedMesh} from './common';
 
@@ -18,8 +18,18 @@ abstract class GameObject extends THREE.Mesh {
  * Level is just the level mesh.
  */
 class Level extends GameObject {
+  material: THREE.MeshPhongMaterial[];
   constructor() {
     super(Game.levelMesh);
+
+    this.material[0].emissiveIntensity = 0.4;
+    this.material[0].emissive = new Color(0x404040);
+
+    this.material[1].emissiveIntensity = 0.4;
+    this.material[1].emissive = new Color(0x101060);
+
+    this.material[2].emissiveIntensity = 0.4;
+    this.material[2].emissive = new Color(0x101010);
   }
 
   update(frameTime?: number) {}
@@ -45,9 +55,11 @@ class Player extends GameObject {
 
     this.add(this.camera);
 
-    const light = new THREE.PointLight(0x10ea10, 0.5);
+    const light = new THREE.PointLight(0x10ea10, 0.1);
 
-    this.add();
+    light.position.setY(3);
+
+    this.add(light);
 
     this.position.setY(1.0);
   }
@@ -62,8 +74,12 @@ class Player extends GameObject {
       if (gamepadList[0] !== null) {
         console.log('Attached Gamepad');
         this.gamepad = gamepadList[0];
+      } else {
+        return;
       }
     }
+
+    console.log(this.gamepad.axes[0], this.gamepad.axes[1]);
   }
 }
 
