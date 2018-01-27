@@ -92,7 +92,7 @@ export class Dungeon extends Graph {
     this.addNode('end');
 
     this.getAllNodes().forEach((node) => {
-      if (this.getNodeAttribute(node, 'difficulty') === maxDifficulty) {
+      if (this.getNodeAttribute(node, 'difficulty', -1) === maxDifficulty) {
         this.addEdge(node, 'end');
       }
     });

@@ -72,8 +72,9 @@ class Node {
 
   exportDotNode(): string {
     let label = this.getId();
-    if (this.difficulty > 0) {
-      label = `Level ${this.difficulty}`;
+    const difficulty = this.attributes['difficulty'] || -1;
+    if (difficulty > 0) {
+      label = `Level ${difficulty}`;
     }
     return `${this.id}[label=${JSON.stringify(label)}, shape=square, width=${
         this.width}, height=${this.height}];`;
@@ -81,6 +82,15 @@ class Node {
 
   getEdgeTargets(): string[] {
     return Array.from(this.edges.values(), (edge) => edge.getTarget());
+  }
+
+  getAttribute<T>(key: string, def: T): T {
+    return this.attributes[key] || def;
+  }
+
+  // tslint:disable-next-line:no-any
+  setAttribute(key: string, value: any) {
+    this.attributes[key] = value;
   }
 }
 
@@ -158,6 +168,14 @@ export class Graph {
 
   getNodeEdges(node: string): string[] {
     return (this.getNode(node) || expect()).getEdgeTargets();
+  }
+
+  getNodeAttribute<T>(node: string, key: string, def: T): T {
+    return (this.getNode(node) || expect()).getAttribute(key, def);
+  }
+
+  setNodeAttribute(node: string, key: string, value: any) {
+    return (this.getNode(node) || expect()).setAttribute(key, value);
   }
 
   private getNode(id: string): Node|null {
