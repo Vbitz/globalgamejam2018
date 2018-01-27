@@ -12,8 +12,14 @@ enum DungeonAttributes {
   OptimalPath = 'optimalPath'
 }
 
+function makePermissionPair(agentId: string, resourceId: string): string {
+  return `${agentId}_${resourceId}`;
+}
+
 export class Dungeon {
   private graph = new Graph();
+
+  private permissions: Map<string, boolean> = new Map();
 
   generateLevel(nodeCount: number, edgeCount: number) {
     // Add random nodes
@@ -117,16 +123,24 @@ export class Dungeon {
     });
   }
 
-  getEdgeTarget(nodeId: string, edgeId: string): string {
-    return this.graph.getEdgeTarget(nodeId, edgeId);
+  getEdgeTarget(agentId: string, nodeId: string, edgeId: string): string|null {
+    if (!this.checkRead(agentId, nodeId)) {
+      return null;
+    } else {
+      return this.graph.getEdgeTarget(nodeId, edgeId);
+    }
   }
 
-  getNodeEdges(nodeId: string): string[] {
-    return this.graph.getNodeEdgeTargets(nodeId);
+  getNodeEdges(agentId: string, nodeId: string): string[]|null {
+    if (!this.checkRead(agentId, nodeId)) {
+      return null;
+    } else {
+      return this.graph.getNodeEdgeTargets(nodeId);
+    }
   }
 
   visit(agentId: string, nodeId: string) {
-    throw new Error('Not Implemented');
+    this.permissions.set(makePermissionPair(agentId, nodeId), true);
   }
 
   exportDotEdges(nodeId: string): string {
@@ -167,4 +181,6 @@ export class Dungeon {
         ${body}
       }`;
   }
+
+  private checkRead(agentId: string, resourceId: string) {}
 }
