@@ -10,7 +10,8 @@ enum AgentState {
   Adventuring,
 
   /**
-   * Just encountered something really scarry. Backtracking though steps.
+   * Just encountered something really scarry. Backtracking though the history
+   * to get to the entrance..
    */
   NOPE,
 }
@@ -22,5 +23,9 @@ export class Agent {
 
   isAlive() {
     return this.alive;
+  }
+
+  isResting() {
+    return this.state === AgentState.Resting;
   }
 }
