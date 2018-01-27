@@ -1,34 +1,57 @@
 import * as THREE from 'three';
 
-import {expect} from './common';
+import {expect, LoadedMesh} from './common';
 
 /**
  * Level is just the level mesh.
  */
-class Level extends THREE.Mesh {}
+class Level extends THREE.Mesh {
+  constructor() {
+    super(Game.levelMesh.geometry, Game.levelMesh.materials);
+  }
+}
 
 /**
  * Player is player.json controlled by the player with a gamepad.
  */
-class Player extends THREE.Mesh {}
+class Player extends THREE.Mesh {
+  private camera: THREE.PerspectiveCamera;
+
+  constructor() {
+    super(Game.playerMesh.geometry, Game.playerMesh.materials);
+
+    this.add(this.camera);
+  }
+}
 
 /**
  * Turret is computer controlled. It shoots bullets.
  */
-class Turret extends THREE.Mesh {}
+class Turret extends THREE.Mesh {
+  constructor() {
+    super(Game.turretMesh.geometry, Game.turretMesh.materials);
+  }
+}
 
 /**
  * Bullet damages whatever it runs into. Turrets can be hurt by their own
  * bullets but players can't.
  */
-class Bullet extends THREE.Mesh {}
+class Bullet extends THREE.Mesh {
+  constructor() {
+    super(Game.bulletMesh.geometry, Game.bulletMesh.materials);
+  }
+}
 
 class Game {
+  static levelMesh: LoadedMesh;
+  static playerMesh: LoadedMesh;
+  static turretMesh: LoadedMesh;
+  static bulletMesh: LoadedMesh;
+
   private renderer: THREE.WebGLRenderer;
 
   private scene: THREE.Scene;
-
-  private camera: THREE.PerspectiveCamera;
 
   private container: HTMLDivElement;
 
@@ -76,6 +99,38 @@ class Game {
 
     this.scene.add(directionLight);
 
+    this.scene.add(new Level());
+
+    this.player = new Player();
+
     this.container.appendChild(this.renderer.domElement);
+
+    this.update();
+
+    this.loadAllMeshes();
+  }
+
+  private update(frameTime?: number) {
+    this.renderer.render(this.scene, this.camera, this.mainTarget, true);
+
+    this.renderer.render(this.screenScene, this.screenCamera);
+
+    requestAnimationFrame(this.update.bind(this));
+  }
+
+  private loadAllMeshes() {
+    const loader = new THREE.JSONLoader();
+
+    const levelJson =
+        require('fs').readFileSync(__dirname + '../res/level.json', 'utf8');
+    const playerJson =
+        require('fs').readFileSync(__dirname + '../res/player.json', 'utf8');
+    const turretJson =
+        require('fs').readFileSync(__dirname + '../res/turret.json', 'utf8');
+    const bulletJson =
+        require('fs').readFileSync(__dirname + '../res/bullet.json', 'utf8');
+
+
+    Game.playerMesh = loader.parse(JSON.parse(playerJson));
   }
 }
