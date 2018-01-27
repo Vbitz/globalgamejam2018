@@ -2,6 +2,16 @@ import {expect, randArray} from '../common';
 
 import {Graph} from './Graph';
 
+enum DungeonSpecialNodes {
+  DungeonEntry = 'entry',
+  DungeonTreasure = 'treasure'
+}
+
+enum DungeonAttributes {
+  Difficulty = 'difficulty',
+  OptimalPath = 'optimalPath'
+}
+
 export class Dungeon {
   private graph = new Graph();
 
@@ -9,7 +19,7 @@ export class Dungeon {
     // Add random nodes
     const nodes: string[] = [];
 
-    nodes.push(this.graph.addNode('entry'));
+    nodes.push(this.graph.addNode(DungeonSpecialNodes.DungeonEntry));
 
     for (let i = 0; i < nodeCount; i++) {
       nodes.push(this.graph.addNode());
@@ -72,11 +82,12 @@ export class Dungeon {
     let maxDifficulty = 0;
 
     const setDifficulty = (node: string, level: number) => {
-      if (this.graph.getNodeAttribute(node, 'difficulty', -1) > -1) {
+      if (this.graph.getNodeAttribute(node, DungeonAttributes.Difficulty, -1) >
+          -1) {
         return;
       }
 
-      this.graph.setNodeAttribute(node, 'difficulty', level);
+      this.graph.setNodeAttribute(node, DungeonAttributes.Difficulty, level);
 
       maxDifficulty = Math.max(level, maxDifficulty);
 
@@ -87,19 +98,20 @@ export class Dungeon {
 
     setDifficulty('entry', 0);
 
-    this.graph.addNode('end');
+    this.graph.addNode(DungeonSpecialNodes.DungeonTreasure);
 
     this.graph.getAllNodes().forEach((node) => {
-      if (this.graph.getNodeAttribute(node, 'difficulty', -1) ===
-          maxDifficulty) {
-        this.graph.addEdge(node, 'end');
+      if (this.graph.getNodeAttribute(
+              node, DungeonAttributes.Difficulty, -1) === maxDifficulty) {
+        this.graph.addEdge(node, DungeonSpecialNodes.DungeonTreasure);
       }
     });
 
-    const optimalPath = this.graph.getPath('entry', 'end');
+    const optimalPath = this.graph.getPath(
+        DungeonSpecialNodes.DungeonEntry, DungeonSpecialNodes.DungeonTreasure);
 
     optimalPath.forEach((node) => {
-      this.graph.setNodeAttribute(node, 'optimalPath', true);
+      this.graph.setNodeAttribute(node, DungeonAttributes.OptimalPath, true);
     });
   }
 }

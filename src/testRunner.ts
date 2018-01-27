@@ -24,6 +24,8 @@ const readFile = promisify(readFile_);
  * decided by looking at the list of edges with unknown nodes on the other side.
  */
 class TestRunner {
+  private agentId = 'testRunner';
+
   private dungeon: Dungeon;
   private agents: Agent[];
 
@@ -32,15 +34,11 @@ class TestRunner {
   async runTest(): Promise<void> {
     this.dungeon = new Dungeon();
 
-    const currentGraph = new Graph();
-
-    currentGraph.addNode('entry');
-
     this.dungeon.generateLevel(25, 10);
 
-    // const graph = this.dungeon.exportDot();
+    const graph = this.dungeon.exportDot();
 
-    // await writeFile('out.dot', graph, 'utf8');
+    await writeFile('out.dot', graph, 'utf8');
 
     // let livingAgents = this.agents.filter((agent) => agent.isAlive());
 
