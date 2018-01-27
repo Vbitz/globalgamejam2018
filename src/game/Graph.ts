@@ -76,7 +76,7 @@ class Node {
   }
 
   getAttribute<T>(key: string, def: T): T {
-    return this.attributes[key] === undefined ? this.attributes[key] : def;
+    return this.attributes[key] !== undefined ? this.attributes[key] : def;
   }
 
   // tslint:disable-next-line:no-any

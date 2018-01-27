@@ -82,8 +82,10 @@ export class Dungeon {
     let maxDifficulty = 0;
 
     const setDifficulty = (node: string, level: number) => {
-      if (this.graph.getNodeAttribute(node, DungeonAttributes.Difficulty, -1) >
-          -1) {
+      const diff =
+          this.graph.getNodeAttribute(node, DungeonAttributes.Difficulty, -1);
+
+      if (diff > -1) {
         return;
       }
 
