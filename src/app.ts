@@ -48,7 +48,7 @@ class Player extends GameObject {
 
   private raycaster: THREE.Raycaster;
 
-  constructor() {
+  constructor(private owner: Game) {
     super(Game.playerMesh);
 
     this.camera = new THREE.PerspectiveCamera();
@@ -66,7 +66,7 @@ class Player extends GameObject {
 
     this.add(light);
 
-    this.position.setY(1.0);
+    this.position.setY(0.5);
 
     this.raycaster = new THREE.Raycaster;
   }
@@ -116,9 +116,18 @@ class Player extends GameObject {
                            .multiplyScalar(time - this.lastUpdate)
                            .multiplyScalar(this.speed);
 
-    const
+    this.raycaster.set(this.position, moveVector);
 
-        this.position.add(moveVector);
+    const intersections =
+        this.raycaster.intersectObjects(this.owner.getObjects(this));
+
+    const colides =
+        intersections.filter((int) => int.object !== this && int.distance < 1)
+            .length > 0;
+
+    if (!colides) {
+      this.position.add(moveVector);
+    }
 
     this.lastUpdate = time;
   }
@@ -166,6 +175,7 @@ class Game {
   private screenScene: THREE.Scene;
   private screenCamera: THREE.OrthographicCamera;
 
+  private level: Level;
   private player: Player;
 
   private playerCamera: THREE.PerspectiveCamera;
@@ -198,9 +208,11 @@ class Game {
     this.screenCamera.position.setZ(100);
     this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this.scene.add(new Level());
+    this.level = new Level();
 
-    this.player = new Player();
+    this.scene.add(this.level);
+
+    this.player = new Player(this);
 
     this.scene.add(this.player);
 
@@ -215,6 +227,14 @@ class Game {
     this.onResize();
 
     this.update();
+  }
+
+  getLevel() {
+    return this.level;
+  }
+
+  getObjects(exclude?: THREE.Object3D) {
+    return this.scene.children.filter((obj) => obj === exclude);
   }
 
   private onResize() {
