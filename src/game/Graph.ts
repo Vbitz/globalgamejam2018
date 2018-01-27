@@ -6,10 +6,16 @@ class Edge {
    */
   walkTime: number;
 
+  private id: string = randomId();
+
   constructor(private target: string) {}
 
   getTarget(): string {
     return this.target;
+  }
+
+  getId(): string {
+    return this.id;
   }
 }
 
@@ -37,9 +43,10 @@ class Node {
     return this.id;
   }
 
-  addEdgeTo(target: string) {
+  addEdgeTo(target: string): string {
     const newEdge = new Edge(target);
-    this.edges.push();
+    this.edges.set(newEdge.getId(), newEdge);
+    return newEdge.getId();
   }
 
   hasEdgeTo(target: string) {
