@@ -36,7 +36,7 @@ class TestRunner {
   async runTest(): Promise<void> {
     this.dungeon = new Dungeon();
 
-    this.dungeon.generateLevel(25, 10);
+    this.dungeon.generateLevel(2500, 100);
 
     const graph = this.dungeon.exportDot();
 
