@@ -5,6 +5,11 @@ enum AgentState {
   Resting,
 
   /**
+   * Using a predetermined path to get to a destination.
+   */
+  Traveling,
+
+  /**
    * Just walking though the dungeon gradually producing a map of the interior.
    */
   Adventuring,
@@ -21,6 +26,8 @@ export class Agent {
 
   private state: AgentState = AgentState.Resting;
 
+  // private history:
+
   isAlive() {
     return this.alive;
   }
@@ -28,4 +35,7 @@ export class Agent {
   isResting() {
     return this.state === AgentState.Resting;
   }
+
+  step() {
+    if (this.state === AgentState.) }
 }
