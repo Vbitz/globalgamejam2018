@@ -1,3 +1,5 @@
+import {randomId} from '../common';
+
 import {Dungeon} from './Dungeon';
 import {Graph} from './Graph';
 
@@ -28,6 +30,8 @@ export enum AgentState {
  * As they move around
  */
 export class Agent {
+  private agentId: string;
+
   private alive = true;
 
   private state: AgentState = AgentState.Resting;
@@ -38,8 +42,10 @@ export class Agent {
 
   private currentRoute: string[];
 
-  constructor(private owner: Dungeon, startingLocation: string) {
+  constructor(private dungeon: Dungeon, startingLocation: string) {
     this.currentLocationId = startingLocation;
+
+    this.agentId = randomId();
   }
 
   isAlive() {
@@ -61,7 +67,7 @@ export class Agent {
   moveToLocation(edgeId: string) {
     this.remainingSteps -= 1;
     this.currentLocationId =
-        this.graph.getEdgeTarget(this.currentLocationId, edgeId);
+        this.dungeon.getEdgeTarget(this.currentLocationId, edgeId);
 
     this.onReachLocation();
   }
@@ -81,10 +87,11 @@ export class Agent {
   }
 
   private getLocationEdges(): string[] {
-    return this.owner.getNodeEdges(this.currentLocationId);
+    return this.dungeon.getNodeEdges(this.currentLocationId);
   }
 
   private onReachLocation() {
     // "Look" around the room and gather information into your current graph.
+    this.dungeon.getNodeEdges(this.currentLocationId);
   }
 }

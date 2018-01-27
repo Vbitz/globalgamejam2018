@@ -85,6 +85,10 @@ class Node {
     return Array.from(this.edges.values(), (edge) => edge.getTarget());
   }
 
+  getEdgeTarget(edgeId: string): string {
+    return (this.getEdge(edgeId) || expect()).getTarget();
+  }
+
   getEdgeIds(): string[] {
     return Array.from(this.edges.keys());
   }
@@ -96,6 +100,10 @@ class Node {
   // tslint:disable-next-line:no-any
   setAttribute(key: string, value: any) {
     this.attributes[key] = value;
+  }
+
+  private getEdge(edgeId: string): Edge|null {
+    return this.edges.get(edgeId) || null;
   }
 }
 
@@ -224,8 +232,8 @@ export class Graph {
     return (this.getNode(node) || expect()).setAttribute(key, value);
   }
 
-  merge(other: Graph) {
-    // TODO: Implement this.
+  getEdgeTarget(node: string, edgeId: string): string {
+    return (this.getNode(node) || expect()).getEdgeTarget(edgeId);
   }
 
   private getNode(id: string): Node|null {
