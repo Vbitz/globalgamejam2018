@@ -17,7 +17,7 @@ class Node {
   /** Distance from starting node */
   difficulty = -1;
 
-  private edges: Edge[] = [];
+  private edges: Map<string, Edge> = new Map();
 
   private id: string = randomId();
 
@@ -38,7 +38,8 @@ class Node {
   }
 
   addEdgeTo(target: string) {
-    this.edges.push(new Edge(target));
+    const newEdge = new Edge(target);
+    this.edges.push();
   }
 
   hasEdgeTo(target: string) {
@@ -115,6 +116,8 @@ export class Graph {
 
     return true;
   }
+
+  getPath(from: string, to: string): string[] {}
 
   private getNode(id: string): Node|null {
     return this.nodes.get(id) || null;
