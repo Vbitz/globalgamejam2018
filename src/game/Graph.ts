@@ -76,7 +76,7 @@ class Node {
   }
 
   getAttribute<T>(key: string, def: T): T {
-    return this.attributes[key] || def;
+    return this.attributes[key] === undefined ? this.attributes[key] : def;
   }
 
   // tslint:disable-next-line:no-any
@@ -151,7 +151,7 @@ export class Graph {
         break;
       }
 
-      this.getNodeEdges(nextNode.key).forEach((edge) => {
+      this.getNodeEdgeTargets(nextNode.key).forEach((edge) => {
         const alt = distances[nextNode.key] + 1;
         if (alt < distances[edge]) {
           distances[edge] = alt;
@@ -181,28 +181,28 @@ export class Graph {
     return Array.from(this.nodes.keys());
   }
 
-  getNodeEdges(node: string): string[] {
-    return (this.getNode(node) || expect()).getEdgeTargets();
+  getNodeEdgeTargets(nodeId: string): string[] {
+    return (this.getNode(nodeId) || expect()).getEdgeTargets();
   }
 
-  getNodeEdgeIds(node: string): string[] {
-    return (this.getNode(node) || expect()).getEdgeIds();
+  getNodeEdgeIds(nodeId: string): string[] {
+    return (this.getNode(nodeId) || expect()).getEdgeIds();
   }
 
-  getNodeAttribute<T>(node: string, key: string, def: T): T {
-    return (this.getNode(node) || expect()).getAttribute(key, def);
+  getNodeAttribute<T>(nodeId: string, key: string, def: T): T {
+    return (this.getNode(nodeId) || expect()).getAttribute(key, def);
   }
 
   // tslint:disable-next-line:no-any
-  setNodeAttribute(node: string, key: string, value: any) {
-    return (this.getNode(node) || expect()).setAttribute(key, value);
+  setNodeAttribute(nodeId: string, key: string, value: any) {
+    return (this.getNode(nodeId) || expect()).setAttribute(key, value);
   }
 
-  getEdgeTarget(node: string, edgeId: string): string {
-    return (this.getNode(node) || expect()).getEdgeTarget(edgeId);
+  getEdgeTarget(nodeId: string, edgeId: string): string {
+    return (this.getNode(nodeId) || expect()).getEdgeTarget(edgeId);
   }
 
-  private getNode(id: string): Node|null {
-    return this.nodes.get(id) || null;
+  private getNode(nodeId: string): Node|null {
+    return this.nodes.get(nodeId) || null;
   }
 }

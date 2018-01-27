@@ -43,7 +43,7 @@ export class Dungeon {
         const newGroup = [nodeList.pop() || expect()];
 
         const walkNodes = (node: string) => {
-          this.graph.getNodeEdges(node).map((target) => {
+          this.graph.getNodeEdgeTargets(node).map((target) => {
             if (newGroup.indexOf(target) !== -1) {
               return;
             }
@@ -91,7 +91,7 @@ export class Dungeon {
 
       maxDifficulty = Math.max(level, maxDifficulty);
 
-      this.graph.getNodeEdges(node).forEach((edge) => {
+      this.graph.getNodeEdgeTargets(node).forEach((edge) => {
         setDifficulty(edge, level + 1);
       });
     };
@@ -120,17 +120,17 @@ export class Dungeon {
   }
 
   getNodeEdges(nodeId: string): string[] {
-    return this.graph.getNodeEdges(nodeId);
+    return this.graph.getNodeEdgeTargets(nodeId);
   }
 
   visit(agentId: string, nodeId: string) {
-    // Stub
+    throw new Error('Not Implemented');
   }
 
   exportDotEdges(nodeId: string): string {
     return Array
         .from(
-            this.graph.getNodeEdges(nodeId),
+            this.graph.getNodeEdgeIds(nodeId),
             (e) => `${nodeId} -> ${this.graph.getEdgeTarget(nodeId, e)};`)
         .join('\n');
   }
