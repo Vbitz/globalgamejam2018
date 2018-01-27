@@ -148,7 +148,9 @@ export class Dungeon {
     this.permissions.set(makePermissionPair(agentId, nodeId), true);
   }
 
-  getAllNodes(agentId: string): string[] {}
+  getAllNodes(agentId: string): string[] {
+    return this.graph.getAllNodes().filter((n) => this.hasAccess(agentId, n));
+  }
 
   exportDotEdges(nodeId: string): string {
     return Array

@@ -80,6 +80,7 @@ export class Agent {
   }
 
   beginTravel(path: string[]) {
+    this.currentRoute = path;
     this.changeState(AgentState.Traveling);
   }
 
@@ -87,7 +88,6 @@ export class Agent {
     if (this.state === AgentState.Resting) {
       return;
     } else if (this.state === AgentState.Traveling) {
-      // TODO: step to the next point.
       if (this.currentRoute.length > 0) {
         const nextEdge = this.currentRoute.shift() || expect();
         this.moveToLocation(nextEdge);
@@ -95,9 +95,14 @@ export class Agent {
         this.finishTravel();
       }
     } else if (this.state === AgentState.Adventuring) {
-      // TODO: step to a random node that's unknown.
       const edges = this.getLocationEdges();
 
+      const unknownEdges = edges.filter((e) => {
+        return this.dungeon.hasAccess(
+            this.agentId,
+            this.dungeon.getEdgeTarget(
+                this.agentId, this.currentLocationId, e));
+      });
     } else if (this.state === AgentState.NOPE) {
       // TODO: Plot a corse to the entry point and move without stopping.
     } else {
