@@ -3,10 +3,20 @@ import {promisify} from 'util';
 
 import {Agent} from './game/Agent';
 import {Dungeon} from './game/Dungeon';
+import {Graph} from './game/Graph';
 
 const writeFile = promisify(writeFile_);
 const readFile = promisify(readFile_);
 
+/**
+ * Automated testing platform to play the game.
+ *
+ * The strategy is to send adventurers into the dungeon to try and explore the
+ * entire thing and get to the exit.
+ *
+ * The test runner keeps a graph that gradually tries to map to the real dungeon
+ * map.
+ */
 class TestRunner {
   private dungeon: Dungeon;
   private agents: Agent[];
@@ -15,6 +25,10 @@ class TestRunner {
 
   async runTest(): Promise<void> {
     this.dungeon = new Dungeon();
+
+    const currentGraph = new Graph();
+
+    currentGraph.addNode('entry');
 
     this.dungeon.generateLevel();
 
