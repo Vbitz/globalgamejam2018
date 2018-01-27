@@ -36,11 +36,11 @@ class TestRunner {
 
     currentGraph.addNode('entry');
 
-    this.dungeon.generateLevel();
+    this.dungeon.generateLevel(25, 10);
 
-    const graph = this.dungeon.exportDot();
+    // const graph = this.dungeon.exportDot();
 
-    await writeFile('out.dot', graph, 'utf8');
+    // await writeFile('out.dot', graph, 'utf8');
 
     // let livingAgents = this.agents.filter((agent) => agent.isAlive());
 
@@ -59,7 +59,7 @@ class TestRunner {
 async function main(args: string[]): Promise<number> {
   const runner = new TestRunner();
 
-  await runner.runTest();
+  await runner.runTests(100000);
 
   return 0;
 }

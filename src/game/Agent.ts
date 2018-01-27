@@ -1,6 +1,6 @@
 import {Dungeon} from './Dungeon';
 
-enum AgentState {
+export enum AgentState {
   /**
    * Waiting for some kind of command from the player.
    */
@@ -41,9 +41,21 @@ export class Agent {
     return this.state === AgentState.Resting;
   }
 
-  step() {
+  changeState(state: AgentState) {
+    this.state = state;
+  }
+
+  idle() {
     if (this.state === AgentState.Resting) {
-      return
+      return;
+    } else if (this.state === AgentState.Traveling) {
+      // TODO: step to the next point.
+    } else if (this.state === AgentState.Adventuring) {
+      // TODO: step to a random node.
+    } else if (this.state === AgentState.NOPE) {
+      // TODO: Plot a corse to the entry point and move without stopping.
+    } else {
+      throw new Error('Unknown state');
     }
   }
 }

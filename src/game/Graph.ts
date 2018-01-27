@@ -216,6 +216,10 @@ export class Graph {
     return (this.getNode(node) || expect()).setAttribute(key, value);
   }
 
+  merge(other: Graph) {
+    // TODO: Implement this.
+  }
+
   private getNode(id: string): Node|null {
     return this.nodes.get(id) || null;
   }

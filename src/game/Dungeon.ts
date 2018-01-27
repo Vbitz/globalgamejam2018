@@ -3,9 +3,7 @@ import {expect, randArray} from '../common';
 import {Graph} from './Graph';
 
 export class Dungeon extends Graph {
-  generateLevel() {
-    const nodeCount = 200;
-
+  generateLevel(nodeCount: number, edgeCount: number) {
     // Add random nodes
     const nodes: string[] = [];
 
@@ -16,8 +14,6 @@ export class Dungeon extends Graph {
     }
 
     // Add random initial edges
-    const edgeCount = 50;
-
     for (let i = 0; i < edgeCount; i++) {
       const a = randArray(nodes);
       const b = randArray(nodes);
