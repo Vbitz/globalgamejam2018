@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {AmbientLight, DirectionalLight} from 'three';
 
 import {expect, LoadedMesh} from './common';
 
@@ -37,10 +38,18 @@ class Player extends GameObject {
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(0, 10, 2);
+    this.camera.position.set(0, 30, 10);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
+    this.scale.set(0.25, 0.25, 0.25);
+
     this.add(this.camera);
+
+    const light = new THREE.PointLight(0x10ea10, 0.5);
+
+    this.add();
+
+    this.position.setY(1.0);
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -118,7 +127,7 @@ class Game {
     this.scene = new THREE.Scene();
 
     this.mainTarget = new THREE.WebGLRenderTarget(
-        256, 240,
+        640, 480,
         {minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
 
     this.screenScene = new THREE.Scene();
@@ -131,12 +140,6 @@ class Game {
 
     this.screenCamera.position.setZ(100);
     this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    const directionLight = new THREE.DirectionalLight(0xeaeaea);
-    directionLight.lookAt(new THREE.Vector3(0, 0, 0));
-    directionLight.position.set(20, 20, -20);
-
-    this.scene.add(directionLight);
 
     this.scene.add(new Level());
 
