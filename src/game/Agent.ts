@@ -38,8 +38,6 @@ export class Agent {
 
   private currentRoute: string[];
 
-  private graph: Graph = new Graph();
-
   constructor(private owner: Dungeon, startingLocation: string) {
     this.currentLocationId = startingLocation;
   }
