@@ -1,4 +1,5 @@
 import {Dungeon} from './Dungeon';
+import {Graph} from './Graph';
 
 export enum AgentState {
   /**
@@ -31,7 +32,17 @@ export class Agent {
 
   private state: AgentState = AgentState.Resting;
 
-  constructor(private owner: Dungeon) {}
+  private remainingSteps = 0;
+
+  private currentLocationId: string;
+
+  private currentRoute: string[];
+
+  private graph: Graph = new Graph();
+
+  constructor(private owner: Dungeon, startingLocation: string) {
+    this.currentLocationId = startingLocation;
+  }
 
   isAlive() {
     return this.alive;
@@ -43,6 +54,18 @@ export class Agent {
 
   changeState(state: AgentState) {
     this.state = state;
+  }
+
+  addFood(food: number) {
+    this.remainingSteps += food;
+  }
+
+  moveToLocation(edgeId: string) {
+    this.remainingSteps -= 1;
+    this.currentLocationId =
+        this.graph.getEdgeTarget(this.currentLocationId, edgeId);
+
+    this.onReachLocation();
   }
 
   idle() {
@@ -57,5 +80,13 @@ export class Agent {
     } else {
       throw new Error('Unknown state');
     }
+  }
+
+  private getLocationEdges(): string[] {
+    return this.owner.getNodeEdges(this.currentLocationId);
+  }
+
+  private onReachLocation() {
+    // "Look" around the room and gather information into your current graph.
   }
 }

@@ -85,6 +85,10 @@ class Node {
     return Array.from(this.edges.values(), (edge) => edge.getTarget());
   }
 
+  getEdgeIds(): string[] {
+    return Array.from(this.edges.keys());
+  }
+
   getAttribute<T>(key: string, def: T): T {
     return this.attributes[key] || def;
   }
@@ -205,6 +209,10 @@ export class Graph {
 
   getNodeEdges(node: string): string[] {
     return (this.getNode(node) || expect()).getEdgeTargets();
+  }
+
+  getNodeEdgeIds(node: string): string[] {
+    return (this.getNode(node) || expect()).getEdgeIds();
   }
 
   getNodeAttribute<T>(node: string, key: string, def: T): T {
