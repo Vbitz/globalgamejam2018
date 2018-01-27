@@ -16,6 +16,12 @@ const readFile = promisify(readFile_);
  *
  * The test runner keeps a graph that gradually tries to map to the real dungeon
  * map.
+ *
+ * When an agent walks the graph they come back the other end with the set of
+ * steps they did. For each node they also know the edges on them. The algorithm
+ * for the test runner is to send out all the agents to explore a number of
+ * steps beyond their target and come back with the information. Targets are
+ * decided by looking at the list of edges with unknown nodes on the other side.
  */
 class TestRunner {
   private dungeon: Dungeon;
