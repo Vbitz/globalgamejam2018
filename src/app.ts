@@ -44,6 +44,10 @@ class Player extends GameObject {
 
   private lastUpdate: number = 0;
 
+  private speed = 5;
+
+  private raycaster: THREE.Raycaster;
+
   constructor() {
     super(Game.playerMesh);
 
@@ -63,6 +67,8 @@ class Player extends GameObject {
     this.add(light);
 
     this.position.setY(1.0);
+
+    this.raycaster = new THREE.Raycaster;
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -106,8 +112,13 @@ class Player extends GameObject {
       y = 0;
     }
 
-    this.position.add(
-        new THREE.Vector3(x, 0, y).multiplyScalar(time - this.lastUpdate));
+    const moveVector = new THREE.Vector3(x, 0, y)
+                           .multiplyScalar(time - this.lastUpdate)
+                           .multiplyScalar(this.speed);
+
+    const
+
+        this.position.add(moveVector);
 
     this.lastUpdate = time;
   }
