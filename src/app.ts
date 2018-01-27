@@ -85,7 +85,9 @@ class Player extends GameObject {
       return;
     }
 
-    console.log(this.gamepad.axes);
+    const data = navigator.getGamepads()[this.gamepad.index];
+
+    console.log(data.axes);
   }
 }
 
