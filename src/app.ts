@@ -55,7 +55,7 @@ class Player extends GameObject {
 
     this.add(this.camera);
 
-    const light = new THREE.PointLight(0x10ea10, 0.1);
+    const light = new THREE.PointLight(0x10ea10, 0.3);
 
     light.position.setY(3);
 
@@ -79,7 +79,13 @@ class Player extends GameObject {
       }
     }
 
-    console.log(this.gamepad.axes[0], this.gamepad.axes[1]);
+    if (!this.gamepad.connected) {
+      console.log('Detached Gamepad');
+      this.gamepad = null;
+      return;
+    }
+
+    console.log(this.gamepad.axes);
   }
 }
 
