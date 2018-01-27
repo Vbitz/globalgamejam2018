@@ -96,5 +96,11 @@ export class Dungeon extends Graph {
         this.addEdge(node, 'end');
       }
     });
+
+    const optimalPath = this.getPath('entry', 'end');
+
+    optimalPath.forEach((node) => {
+      this.setNodeAttribute(node, 'optimalPath', true);
+    });
   }
 }

@@ -38,11 +38,15 @@ class TestRunner {
 
     this.dungeon.generateLevel();
 
-    let livingAgents = this.agents.filter((agent) => agent.isAlive());
+    const graph = this.dungeon.exportDot();
 
-    while (livingAgents.length > 1) {
-      livingAgents = this.agents.filter((agent) => agent.isAlive());
-    }
+    await writeFile('out.dot', graph, 'utf8');
+
+    // let livingAgents = this.agents.filter((agent) => agent.isAlive());
+
+    // while (livingAgents.length > 1) {
+    //   livingAgents = this.agents.filter((agent) => agent.isAlive());
+    // }
   }
 
   async runTests(runs: number): Promise<void> {

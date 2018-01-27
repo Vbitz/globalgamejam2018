@@ -76,8 +76,9 @@ class Node {
     if (difficulty > 0) {
       label = `Level ${difficulty}`;
     }
+    const color = this.attributes['optimalPath'] ? 'red' : 'black';
     return `${this.id}[label=${JSON.stringify(label)}, shape=square, width=${
-        this.width}, height=${this.height}];`;
+        this.width}, height=${this.height}, color=${JSON.stringify(color)}];`;
   }
 
   getEdgeTargets(): string[] {
@@ -210,6 +211,7 @@ export class Graph {
     return (this.getNode(node) || expect()).getAttribute(key, def);
   }
 
+  // tslint:disable-next-line:no-any
   setNodeAttribute(node: string, key: string, value: any) {
     return (this.getNode(node) || expect()).setAttribute(key, value);
   }
