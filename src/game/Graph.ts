@@ -125,11 +125,15 @@ export class Graph {
   }
 
   getPath(from: string, to: string): string[] {
+    return this.getRestrictedPath(this.getAllNodes(), from, to);
+  }
+
+  getRestrictedPath(nodes: string[], from: string, to: string): string[] {
     const unvisitedNodes: string[] = [];
     const distances: Bag<number> = {};
     const previousNodes: Bag<string|null> = {};
 
-    this.nodes.forEach((v, k) => {
+    nodes.forEach((k) => {
       distances[k] = Infinity;
       previousNodes[k] = null;
       unvisitedNodes.push(k);

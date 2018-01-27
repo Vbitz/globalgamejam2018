@@ -76,6 +76,8 @@ export class Agent {
         expect();
 
     this.dungeon.visit(this.agentId, this.currentLocationId);
+
+    // TODO: Handle end state of game.
     this.onReachLocation();
   }
 
