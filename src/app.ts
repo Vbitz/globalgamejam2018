@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import {AmbientLight, Color, DirectionalLight} from 'three';
 
 import {expect, LoadedMesh} from './common';
 
@@ -23,13 +22,13 @@ class Level extends GameObject {
     super(Game.levelMesh);
 
     this.material[0].emissiveIntensity = 0.4;
-    this.material[0].emissive = new Color(0x404040);
+    this.material[0].emissive = new THREE.Color(0x404040);
 
     this.material[1].emissiveIntensity = 0.4;
-    this.material[1].emissive = new Color(0x101060);
+    this.material[1].emissive = new THREE.Color(0x101060);
 
     this.material[2].emissiveIntensity = 0.4;
-    this.material[2].emissive = new Color(0x101010);
+    this.material[2].emissive = new THREE.Color(0x101010);
   }
 
   update(frameTime?: number) {}
@@ -87,7 +86,9 @@ class Player extends GameObject {
 
     const data = navigator.getGamepads()[this.gamepad.index];
 
-    console.log(data.axes);
+    console.log(new THREE.Vector3(data.axes[0], 0, data.axes[1]));
+
+    this.position.add(new THREE.Vector3(data.axes[0], 0, data.axes[1]));
   }
 }
 
