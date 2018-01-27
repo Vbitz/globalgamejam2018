@@ -1,4 +1,4 @@
-import {expect, rand, randArray, randomId} from '../common';
+import {Bag, expect, rand, randArray, randomId} from '../common';
 
 class Edge {
   /**
@@ -135,7 +135,17 @@ export class Graph {
     return true;
   }
 
-  getPath(from: string, to: string): string[] {}
+  getPath(from: string, to: string): string[] {
+    const unvisitedNodes: string[] = [];
+    const distances: Bag<number> = {};
+    const previousNodes: Bag<string|null> = {};
+
+    this.nodes.forEach((v, k) => {
+      distances[k] = Infinity;
+      previousNodes[k] = null;
+      unvisitedNodes.push(k);
+    });
+  }
 
   private getNode(id: string): Node|null {
     return this.nodes.get(id) || null;
