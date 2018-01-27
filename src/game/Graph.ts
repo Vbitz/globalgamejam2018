@@ -156,6 +156,8 @@ export class Graph {
       unvisitedNodes.push(k);
     });
 
+    distances[from] = 0;
+
     while (unvisitedNodes.length !== 0) {
       const unvisitedNodeDistances = unvisitedNodes.map(
           (n, idx) => ({key: n, index: idx, distance: distances[n]}));
@@ -166,12 +168,34 @@ export class Graph {
 
       unvisitedNodes.splice(nextNode.index, 1);
 
+      if (nextNode.key === to) {
+        break;
+      }
+
       this.getNodeEdges(nextNode.key).forEach((edge) => {
         const alt = distances[nextNode.key] + 1;
+        if (alt < distances[edge]) {
+          distances[edge] = alt;
+          previousNodes[edge] = nextNode.key;
+        }
       });
     }
 
-    return [];
+    const ret: string[] = [];
+
+    let cur = to;
+
+    while (previousNodes[cur]) {
+      ret.unshift(cur);
+      const nextVal = previousNodes[cur];
+      if (nextVal !== null) {
+        cur = nextVal;
+      }
+    }
+
+    ret.unshift(from);
+
+    return ret;
   }
 
   getAllNodes(): string[] {
