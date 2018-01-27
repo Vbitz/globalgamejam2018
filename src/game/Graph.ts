@@ -157,6 +157,18 @@ export class Graph {
     });
 
     while (unvisitedNodes.length !== 0) {
+      const unvisitedNodeDistances = unvisitedNodes.map(
+          (n, idx) => ({key: n, index: idx, distance: distances[n]}));
+
+      unvisitedNodeDistances.sort((a, b) => a.distance - b.distance);
+
+      const nextNode = unvisitedNodeDistances[0];
+
+      unvisitedNodes.splice(nextNode.index, 1);
+
+      this.getNodeEdges(nextNode.key).forEach((edge) => {
+        const alt = distances[nextNode.key] + 1;
+      });
     }
 
     return [];
