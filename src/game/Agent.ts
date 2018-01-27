@@ -1,3 +1,5 @@
+import {Dungeon} from './Dungeon';
+
 enum AgentState {
   /**
    * Waiting for some kind of command from the player.
@@ -21,12 +23,15 @@ enum AgentState {
   NOPE,
 }
 
+/**
+ * As they move around
+ */
 export class Agent {
   private alive = true;
 
   private state: AgentState = AgentState.Resting;
 
-  // private history:
+  constructor(private owner: Dungeon) {}
 
   isAlive() {
     return this.alive;
@@ -37,5 +42,8 @@ export class Agent {
   }
 
   step() {
-    if (this.state === AgentState.) }
+    if (this.state === AgentState.Resting) {
+      return
+    }
+  }
 }
