@@ -114,4 +114,43 @@ export class Dungeon {
       this.graph.setNodeAttribute(node, DungeonAttributes.OptimalPath, true);
     });
   }
+
+  exportDotEdges(nodeId: string): string {
+    return Array
+        .from(
+            this.graph.getNodeEdges(nodeId),
+            (e) => `${nodeId} -> ${this.graph.getEdgeTarget(nodeId, e)};`)
+        .join('\n');
+  }
+
+  exportDotNode(nodeId: string): string {
+    let label = nodeId;
+    const difficulty =
+        this.graph.getNodeAttribute(nodeId, DungeonAttributes.Difficulty, -1);
+    if (difficulty > 0) {
+      label = `Level ${difficulty}`;
+    }
+    const color = this.graph.getNodeAttribute(
+                      nodeId, DungeonAttributes.OptimalPath, false) ?
+        'red' :
+        'black';
+    return `${nodeId}[label=${JSON.stringify(label)}, shape=square, color=${
+        JSON.stringify(color)}];`;
+  }
+
+  exportDot(): string {
+    let body = '';
+
+    this.graph.getAllNodes().forEach((v) => {
+      body += `${this.exportDotNode(v)}\n`;
+    });
+
+    this.graph.getAllNodes().forEach((v) => {
+      body += `${this.exportDotEdges(v)}\n`;
+    });
+
+    return `digraph G {
+        ${body}
+      }`;
+  }
 }

@@ -63,24 +63,6 @@ class Node {
     }
   }
 
-  exportDotEdges(): string {
-    return Array
-        .from(
-            this.edges.values(), (e) => `${this.getId()} -> ${e.getTarget()};`)
-        .join('\n');
-  }
-
-  exportDotNode(): string {
-    let label = this.getId();
-    const difficulty = this.attributes['difficulty'] || -1;
-    if (difficulty > 0) {
-      label = `Level ${difficulty}`;
-    }
-    const color = this.attributes['optimalPath'] ? 'red' : 'black';
-    return `${this.id}[label=${JSON.stringify(label)}, shape=square, width=${
-        this.width}, height=${this.height}, color=${JSON.stringify(color)}];`;
-  }
-
   getEdgeTargets(): string[] {
     return Array.from(this.edges.values(), (edge) => edge.getTarget());
   }
@@ -109,22 +91,6 @@ class Node {
 
 export class Graph {
   private nodes: Map<string, Node> = new Map();
-
-  exportDot(): string {
-    let body = '';
-
-    this.nodes.forEach((v, k) => {
-      body += `${v.exportDotNode()}\n`;
-    });
-
-    this.nodes.forEach((v) => {
-      body += `${v.exportDotEdges()}\n`;
-    });
-
-    return `digraph G {
-        ${body}
-      }`;
-  }
 
   addNode(overrideId?: string): string {
     const newNode = new Node(overrideId);
