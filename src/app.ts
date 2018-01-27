@@ -42,6 +42,8 @@ class Player extends GameObject {
 
   private gamepad: Gamepad|null = null;
 
+  private lastUpdate: number = 0;
+
   constructor() {
     super(Game.playerMesh);
 
@@ -54,7 +56,7 @@ class Player extends GameObject {
 
     this.add(this.camera);
 
-    const light = new THREE.PointLight(0x10ea10, 0.3);
+    const light = new THREE.PointLight(0x10ea10, 0.3, 10);
 
     light.position.setY(3);
 
@@ -68,6 +70,12 @@ class Player extends GameObject {
   }
 
   update(frameTime?: number) {
+    const time = (frameTime || 0) / 1000;
+
+    if (this.lastUpdate === 0) {
+      this.lastUpdate = time || 0;
+    }
+
     if (this.gamepad === null) {
       const gamepadList = navigator.getGamepads();
       if (gamepadList[0] !== null) {
@@ -86,9 +94,22 @@ class Player extends GameObject {
 
     const data = navigator.getGamepads()[this.gamepad.index];
 
-    console.log(new THREE.Vector3(data.axes[0], 0, data.axes[1]));
+    let x = data.axes[0];
+    let y = data.axes[1];
 
-    this.position.add(new THREE.Vector3(data.axes[0], 0, data.axes[1]));
+    // Implement Deadzone
+    if (x > -0.1 && x < 0.1) {
+      x = 0;
+    }
+
+    if (y > -0.1 && y < 0.1) {
+      y = 0;
+    }
+
+    this.position.add(
+        new THREE.Vector3(x, 0, y).multiplyScalar(time - this.lastUpdate));
+
+    this.lastUpdate = time;
   }
 }
 
@@ -176,7 +197,20 @@ class Game {
 
     this.container.appendChild(this.renderer.domElement);
 
+    window.addEventListener('resize', (ev) => {
+      this.onResize();
+    });
+
+    this.onResize();
+
     this.update();
+  }
+
+  private onResize() {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+
+    this.playerCamera.aspect = window.innerWidth / window.innerHeight;
+    this.playerCamera.updateProjectionMatrix();
   }
 
   private update(frameTime?: number) {
