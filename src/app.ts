@@ -3,6 +3,13 @@ import * as THREE from 'three';
 import {expect, LoadedMesh} from './common';
 
 abstract class GameObject extends THREE.Mesh {
+  constructor(mesh: LoadedMesh) {
+    if (!mesh.materials) {
+      throw new Error('Bad Mesh');
+    }
+    super(mesh.geometry.clone(), mesh.materials.map((mat) => mat.clone()));
+  }
+
   abstract update(frameTime?: number): void;
 }
 
@@ -11,7 +18,7 @@ abstract class GameObject extends THREE.Mesh {
  */
 class Level extends GameObject {
   constructor() {
-    super(Game.levelMesh.geometry, Game.levelMesh.materials);
+    super(Game.levelMesh);
   }
 
   update(frameTime?: number) {}
@@ -23,17 +30,15 @@ class Level extends GameObject {
 class Player extends GameObject {
   private camera: THREE.PerspectiveCamera;
 
-  private gamepad: Gamepad;
+  private gamepad: Gamepad|null = null;
 
   constructor() {
-    super(Game.playerMesh.geometry, Game.playerMesh.materials);
+    super(Game.playerMesh);
 
     this.camera = new THREE.PerspectiveCamera();
 
     this.camera.position.set(0, 10, 2);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    this.gamepad = navigator.getGamepads()[0] || expect();
 
     this.add(this.camera);
   }
@@ -42,7 +47,15 @@ class Player extends GameObject {
     return this.camera;
   }
 
-  update(frameTime?: number) {}
+  update(frameTime?: number) {
+    if (this.gamepad === null) {
+      const gamepadList = navigator.getGamepads();
+      if (gamepadList[0] !== null) {
+        console.log('Attached Gamepad');
+        this.gamepad = gamepadList[0];
+      }
+    }
+  }
 }
 
 /**
@@ -50,7 +63,7 @@ class Player extends GameObject {
  */
 class Turret extends GameObject {
   constructor() {
-    super(Game.turretMesh.geometry, Game.turretMesh.materials);
+    super(Game.turretMesh);
   }
 
   update(frameTime?: number) {}
@@ -62,7 +75,7 @@ class Turret extends GameObject {
  */
 class Bullet extends GameObject {
   constructor() {
-    super(Game.bulletMesh.geometry, Game.bulletMesh.materials);
+    super(Game.bulletMesh);
   }
 
   update(frameTime?: number) {}
@@ -92,6 +105,8 @@ class Game {
   private playerCamera: THREE.PerspectiveCamera;
 
   init() {
+    this.loadAllMeshes();
+
     this.container = document.querySelector('#container') || expect();
 
     this.renderer = new THREE.WebGLRenderer({antialias: true});
@@ -134,8 +149,6 @@ class Game {
     this.container.appendChild(this.renderer.domElement);
 
     this.update();
-
-    this.loadAllMeshes();
   }
 
   private update(frameTime?: number) {
@@ -156,15 +169,23 @@ class Game {
     const loader = new THREE.JSONLoader();
 
     const levelJson =
-        require('fs').readFileSync(__dirname + '../res/level.json', 'utf8');
+        require('fs').readFileSync(__dirname + '/../res/level.json', 'utf8');
     const playerJson =
-        require('fs').readFileSync(__dirname + '../res/player.json', 'utf8');
+        require('fs').readFileSync(__dirname + '/../res/player.json', 'utf8');
     const turretJson =
-        require('fs').readFileSync(__dirname + '../res/turret.json', 'utf8');
+        require('fs').readFileSync(__dirname + '/../res/turret.json', 'utf8');
     const bulletJson =
-        require('fs').readFileSync(__dirname + '../res/bullet.json', 'utf8');
+        require('fs').readFileSync(__dirname + '/../res/bullet.json', 'utf8');
 
-
+    Game.levelMesh = loader.parse(JSON.parse(levelJson));
     Game.playerMesh = loader.parse(JSON.parse(playerJson));
+    Game.turretMesh = loader.parse(JSON.parse(turretJson));
+    Game.bulletMesh = loader.parse(JSON.parse(bulletJson));
   }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const game = new Game();
+
+  game.init();
+});
