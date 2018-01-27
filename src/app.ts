@@ -2,45 +2,70 @@ import * as THREE from 'three';
 
 import {expect, LoadedMesh} from './common';
 
+abstract class GameObject extends THREE.Mesh {
+  abstract update(frameTime?: number): void;
+}
+
 /**
  * Level is just the level mesh.
  */
-class Level extends THREE.Mesh {
+class Level extends GameObject {
   constructor() {
     super(Game.levelMesh.geometry, Game.levelMesh.materials);
   }
+
+  update(frameTime?: number) {}
 }
 
 /**
  * Player is player.json controlled by the player with a gamepad.
  */
-class Player extends THREE.Mesh {
+class Player extends GameObject {
   private camera: THREE.PerspectiveCamera;
+
+  private gamepad: Gamepad;
 
   constructor() {
     super(Game.playerMesh.geometry, Game.playerMesh.materials);
 
+    this.camera = new THREE.PerspectiveCamera();
+
+    this.camera.position.set(0, 10, 2);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+    this.gamepad = navigator.getGamepads()[0] || expect();
+
     this.add(this.camera);
   }
+
+  getCamera(): THREE.PerspectiveCamera {
+    return this.camera;
+  }
+
+  update(frameTime?: number) {}
 }
 
 /**
  * Turret is computer controlled. It shoots bullets.
  */
-class Turret extends THREE.Mesh {
+class Turret extends GameObject {
   constructor() {
     super(Game.turretMesh.geometry, Game.turretMesh.materials);
   }
+
+  update(frameTime?: number) {}
 }
 
 /**
  * Bullet damages whatever it runs into. Turrets can be hurt by their own
  * bullets but players can't.
  */
-class Bullet extends THREE.Mesh {
+class Bullet extends GameObject {
   constructor() {
     super(Game.bulletMesh.geometry, Game.bulletMesh.materials);
   }
+
+  update(frameTime?: number) {}
 }
 
 class Game {
@@ -62,6 +87,10 @@ class Game {
   private screenScene: THREE.Scene;
   private screenCamera: THREE.OrthographicCamera;
 
+  private player: Player;
+
+  private playerCamera: THREE.PerspectiveCamera;
+
   init() {
     this.container = document.querySelector('#container') || expect();
 
@@ -72,11 +101,6 @@ class Game {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     this.scene = new THREE.Scene();
-
-    this.camera = new THREE.PerspectiveCamera();
-
-    this.camera.position.set(0, 10, 2);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.mainTarget = new THREE.WebGLRenderTarget(
         256, 240,
@@ -103,6 +127,10 @@ class Game {
 
     this.player = new Player();
 
+    this.scene.add(this.player);
+
+    this.playerCamera = this.player.getCamera();
+
     this.container.appendChild(this.renderer.domElement);
 
     this.update();
@@ -111,7 +139,13 @@ class Game {
   }
 
   private update(frameTime?: number) {
-    this.renderer.render(this.scene, this.camera, this.mainTarget, true);
+    this.scene.children.forEach((child) => {
+      if (child instanceof GameObject) {
+        child.update(frameTime);
+      }
+    });
+
+    this.renderer.render(this.scene, this.playerCamera, this.mainTarget, true);
 
     this.renderer.render(this.screenScene, this.screenCamera);
 
