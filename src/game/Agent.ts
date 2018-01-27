@@ -1,4 +1,4 @@
-import {randomId} from '../common';
+import {expect, randomId} from '../common';
 
 import {Dungeon} from './Dungeon';
 import {Graph} from './Graph';
@@ -69,7 +69,12 @@ export class Agent {
     this.currentLocationId =
         this.dungeon.getEdgeTarget(this.currentLocationId, edgeId);
 
+    this.dungeon.visit(this.agentId, this.currentLocationId);
     this.onReachLocation();
+  }
+
+  beginTravel(path: string[]) {
+    this.changeState(AgentState.Traveling);
   }
 
   idle() {
@@ -77,6 +82,12 @@ export class Agent {
       return;
     } else if (this.state === AgentState.Traveling) {
       // TODO: step to the next point.
+      if (this.currentRoute.length > 0) {
+        const nextEdge = this.currentRoute.shift() || expect();
+        this.moveToLocation(nextEdge);
+      } else {
+        this.finishTravel();
+      }
     } else if (this.state === AgentState.Adventuring) {
       // TODO: step to a random node.
     } else if (this.state === AgentState.NOPE) {
@@ -94,4 +105,6 @@ export class Agent {
     // "Look" around the room and gather information into your current graph.
     this.dungeon.getNodeEdges(this.currentLocationId);
   }
+
+  private finishTravel() {}
 }

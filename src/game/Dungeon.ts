@@ -2,15 +2,17 @@ import {expect, randArray} from '../common';
 
 import {Graph} from './Graph';
 
-export class Dungeon extends Graph {
+export class Dungeon {
+  private graph = new Graph();
+
   generateLevel(nodeCount: number, edgeCount: number) {
     // Add random nodes
     const nodes: string[] = [];
 
-    nodes.push(this.addNode('entry'));
+    nodes.push(this.graph.addNode('entry'));
 
     for (let i = 0; i < nodeCount; i++) {
-      nodes.push(this.addNode());
+      nodes.push(this.graph.addNode());
     }
 
     // Add random initial edges
@@ -18,7 +20,7 @@ export class Dungeon extends Graph {
       const a = randArray(nodes);
       const b = randArray(nodes);
 
-      this.addEdge(a, b);
+      this.graph.addEdge(a, b);
     }
 
     // Keep connecting groups together until there is 1 group.
@@ -31,7 +33,7 @@ export class Dungeon extends Graph {
         const newGroup = [nodeList.pop() || expect()];
 
         const walkNodes = (node: string) => {
-          this.getNodeEdges(node).map((target) => {
+          this.graph.getNodeEdges(node).map((target) => {
             if (newGroup.indexOf(target) !== -1) {
               return;
             }
@@ -62,7 +64,7 @@ export class Dungeon extends Graph {
           const randNodeA = randArray(groupA);
           const randNodeB = randArray(groupB);
 
-          this.addEdge(randNodeA, randNodeB);
+          this.graph.addEdge(randNodeA, randNodeB);
         });
       }
     }
@@ -70,33 +72,34 @@ export class Dungeon extends Graph {
     let maxDifficulty = 0;
 
     const setDifficulty = (node: string, level: number) => {
-      if (this.getNodeAttribute(node, 'difficulty', -1) > -1) {
+      if (this.graph.getNodeAttribute(node, 'difficulty', -1) > -1) {
         return;
       }
 
-      this.setNodeAttribute(node, 'difficulty', level);
+      this.graph.setNodeAttribute(node, 'difficulty', level);
 
       maxDifficulty = Math.max(level, maxDifficulty);
 
-      this.getNodeEdges(node).forEach((edge) => {
+      this.graph.getNodeEdges(node).forEach((edge) => {
         setDifficulty(edge, level + 1);
       });
     };
 
     setDifficulty('entry', 0);
 
-    this.addNode('end');
+    this.graph.addNode('end');
 
-    this.getAllNodes().forEach((node) => {
-      if (this.getNodeAttribute(node, 'difficulty', -1) === maxDifficulty) {
-        this.addEdge(node, 'end');
+    this.graph.getAllNodes().forEach((node) => {
+      if (this.graph.getNodeAttribute(node, 'difficulty', -1) ===
+          maxDifficulty) {
+        this.graph.addEdge(node, 'end');
       }
     });
 
-    const optimalPath = this.getPath('entry', 'end');
+    const optimalPath = this.graph.getPath('entry', 'end');
 
     optimalPath.forEach((node) => {
-      this.setNodeAttribute(node, 'optimalPath', true);
+      this.graph.setNodeAttribute(node, 'optimalPath', true);
     });
   }
 }
