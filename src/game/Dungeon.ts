@@ -35,9 +35,7 @@ export class Dungeon extends Graph {
         const newGroup = [nodeList.pop() || expect()];
 
         const walkNodes = (node: string) => {
-          const nodeObj = this.getNode(node) || expect();
-
-          nodeObj.getEdgeTargets().map((target) => {
+          this.getNodeEdges(node).map((target) => {
             if (newGroup.indexOf(target) !== -1) {
               return;
             }
@@ -76,17 +74,15 @@ export class Dungeon extends Graph {
     let maxDifficulty = 0;
 
     const setDifficulty = (node: string, level: number) => {
-      const nodeObj = this.getNode(node) || expect();
-
-      if (nodeObj.difficulty > -1) {
+      if (this.getNodeAttribute(node, 'difficulty', -1) > -1) {
         return;
       }
 
-      nodeObj.difficulty = level;
+      this.setNodeAttribute(node, 'difficulty', level);
 
       maxDifficulty = Math.max(level, maxDifficulty);
 
-      nodeObj.getEdgeTargets().forEach((edge) => {
+      this.getNodeEdges(node).forEach((edge) => {
         setDifficulty(edge, level + 1);
       });
     };
@@ -95,9 +91,9 @@ export class Dungeon extends Graph {
 
     this.addNode('end');
 
-    this.nodes.forEach((node) => {
-      if (node.difficulty === maxDifficulty) {
-        this.addEdge(node.getId(), 'end');
+    this.getAllNodes().forEach((node) => {
+      if (this.getNodeAttribute(node, 'difficulty') === maxDifficulty) {
+        this.addEdge(node, 'end');
       }
     });
   }

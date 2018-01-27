@@ -20,15 +20,15 @@ class Edge {
 }
 
 class Node {
-  /** Distance from starting node */
-  difficulty = -1;
-
   private edges: Map<string, Edge> = new Map();
 
   private id: string = randomId();
 
   private width = 0;
   private height = 0;
+
+  // tslint:disable-next-line:no-any
+  private attributes: Bag<any> = {};
 
   constructor(overrideId?: string) {
     if (overrideId) {
@@ -145,6 +145,19 @@ export class Graph {
       previousNodes[k] = null;
       unvisitedNodes.push(k);
     });
+
+    while (unvisitedNodes.length !== 0) {
+    }
+
+    return [];
+  }
+
+  getAllNodes(): string[] {
+    return Array.from(this.nodes.keys());
+  }
+
+  getNodeEdges(node: string): string[] {
+    return (this.getNode(node) || expect()).getEdgeTargets();
   }
 
   private getNode(id: string): Node|null {
