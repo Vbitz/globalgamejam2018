@@ -95,7 +95,9 @@ export class Agent {
         this.finishTravel();
       }
     } else if (this.state === AgentState.Adventuring) {
-      // TODO: step to a random node.
+      // TODO: step to a random node that's unknown.
+      const edges = this.getLocationEdges();
+
     } else if (this.state === AgentState.NOPE) {
       // TODO: Plot a corse to the entry point and move without stopping.
     } else {
@@ -113,5 +115,13 @@ export class Agent {
     this.dungeon.getNodeEdges(this.agentId, this.currentLocationId);
   }
 
-  private finishTravel() {}
+  private finishTravel() {
+    if (this.dungeon.isInDungeon(this.agentId, this.currentLocationId)) {
+      this.changeState(AgentState.Resting);
+    } else {
+      this.changeState(AgentState.Adventuring);
+    }
+  }
+
+  private isNodeUnknown(edgeId: string) {}
 }

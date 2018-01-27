@@ -189,6 +189,14 @@ export class Dungeon {
       }`;
   }
 
+  hasAccess(agentId: string, resourceId: string): boolean {
+    return this.checkRead(agentId, resourceId);
+  }
+
+  isInDungeon(agentId: string, nodeId: string): boolean {
+    return nodeId === DungeonSpecialNodes.DungeonEntry;
+  }
+
   private checkRead(agentId: string, resourceId: string): boolean {
     return this.permissions.has(makePermissionPair(agentId, resourceId));
   }
