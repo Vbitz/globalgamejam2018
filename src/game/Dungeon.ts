@@ -115,6 +115,18 @@ export class Dungeon {
     });
   }
 
+  getEdgeTarget(nodeId: string, edgeId: string): string {
+    return this.graph.getEdgeTarget(nodeId, edgeId);
+  }
+
+  getNodeEdges(nodeId: string): string[] {
+    return this.graph.getNodeEdges(nodeId);
+  }
+
+  visit(agentId: string, nodeId: string) {
+    // Stub
+  }
+
   exportDotEdges(nodeId: string): string {
     return Array
         .from(

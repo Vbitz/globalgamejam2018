@@ -1,3 +1,5 @@
+require('source-map-support').install();
+
 import {readFile as readFile_, writeFile as writeFile_} from 'fs';
 import {promisify} from 'util';
 
@@ -57,13 +59,22 @@ class TestRunner {
 async function main(args: string[]): Promise<number> {
   const runner = new TestRunner();
 
-  await runner.runTests(100000);
+  try {
+    await runner.runTest();
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 
   return 0;
 }
 
 if (process.mainModule === module) {
-  main(process.argv).then((status) => {
-    process.exit(status);
-  });
+  main(process.argv)
+      .then((status) => {
+        process.exit(status);
+      })
+      .catch((err) => {
+        throw err;
+      });
 }
