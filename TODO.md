@@ -1,9 +1,9 @@
 # IndirectCrawl TODO List
 
-# Any Time
+## Any Time
 - Add food system (handle running out of remaining steps on the agent.)
 
-# Saturday 27 January 2018
+## Saturday 27 January 2018
 - [**DONE**] Add Graph ACLs so the Test Runner can fetch all nodes they can see.
 - [**DONE**] Implement Agent Movement
 - [**DONE**] Implement Agent Tasking
@@ -13,9 +13,12 @@
 - Implement Basic Player User Interface.
 - Add Initial monster implementation (Not affected by level)
 
-# Sunday 28 January 2018
+## Sunday 28 January 2018
 - Add Agent Leveling
 - Add Shop in Town
 - Add More Monster Types
 - Add Agent Classes?
 - Add Resource Nodes that Require Multiple Collections.
+
+## Ideas
+- It would be interesting if the interface of the entire game was based around d3.js. The player would see the map gradually being built in front of them.
