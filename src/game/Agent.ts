@@ -65,9 +65,15 @@ export class Agent {
   }
 
   moveToLocation(edgeId: string) {
+    // TODO: Handle out of remaining steps
     this.remainingSteps -= 1;
+
+    // Warning the agent does not have permission to fetch their current
+    // location information until the dungeon.visit call completes.
     this.currentLocationId =
-        this.dungeon.getEdgeTarget(this.currentLocationId, edgeId);
+        this.dungeon.getEdgeTarget(
+            this.agentId, this.currentLocationId, edgeId) ||
+        expect();
 
     this.dungeon.visit(this.agentId, this.currentLocationId);
     this.onReachLocation();
@@ -98,12 +104,13 @@ export class Agent {
   }
 
   private getLocationEdges(): string[] {
-    return this.dungeon.getNodeEdges(this.currentLocationId);
+    return this.dungeon.getNodeEdges(this.agentId, this.currentLocationId) ||
+        expect();
   }
 
   private onReachLocation() {
     // "Look" around the room and gather information into your current graph.
-    this.dungeon.getNodeEdges(this.currentLocationId);
+    this.dungeon.getNodeEdges(this.agentId, this.currentLocationId);
   }
 
   private finishTravel() {}

@@ -21,6 +21,11 @@ export class Dungeon {
 
   private permissions: Map<string, boolean> = new Map();
 
+  /**
+   * Generates a new dungeon level.
+   * @param nodeCount The number of initial nodes added.
+   * @param edgeCount The number of edges added.
+   */
   generateLevel(nodeCount: number, edgeCount: number) {
     // Add random nodes
     const nodes: string[] = [];
@@ -143,6 +148,8 @@ export class Dungeon {
     this.permissions.set(makePermissionPair(agentId, nodeId), true);
   }
 
+  getAllNodes(agentId: string): string[] {}
+
   exportDotEdges(nodeId: string): string {
     return Array
         .from(
@@ -182,5 +189,7 @@ export class Dungeon {
       }`;
   }
 
-  private checkRead(agentId: string, resourceId: string) {}
+  private checkRead(agentId: string, resourceId: string): boolean {
+    return this.permissions.has(makePermissionPair(agentId, resourceId));
+  }
 }
