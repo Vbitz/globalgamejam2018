@@ -49,14 +49,25 @@ class Node {
     return newEdge.getId();
   }
 
-  hasEdgeTo(target: string) {
-    return this.edges.filter((edge) => edge.getTarget() === target).length > 0;
+  hasEdgeTo(target: string): boolean {
+    const iter = this.edges.values();
+    while (true) {
+      const val = iter.next();
+      if (val.done) {
+        return false;
+      } else {
+        if (val.value.getTarget() === target) {
+          return true;
+        }
+      }
+    }
   }
 
   exportDotEdges(): string {
-    return `${
-        this.edges.map((e) => `${this.getId()} -> ${e.getTarget()};`)
-            .join('\n')}`;
+    return Array
+        .from(
+            this.edges.values(), (e) => `${this.getId()} -> ${e.getTarget()};`)
+        .join('\n');
   }
 
   exportDotNode(): string {
@@ -69,7 +80,7 @@ class Node {
   }
 
   getEdgeTargets(): string[] {
-    return this.edges.map((edge) => edge.getTarget());
+    return Array.from(this.edges.values(), (edge) => edge.getTarget());
   }
 }
 
