@@ -2,12 +2,16 @@ import * as THREE from 'three';
 
 import {expect, LoadedMesh} from './common';
 
-abstract class GameObject extends THREE.Mesh {
+abstract class GameObject extends THREE.Object3D {
+  protected mesh: THREE.Mesh;
   constructor(mesh: LoadedMesh) {
     if (!mesh.materials) {
       throw new Error('Bad Mesh');
     }
-    super(mesh.geometry.clone(), mesh.materials.map((mat) => mat.clone()));
+    super();
+    this.mesh = new THREE.Mesh(
+        mesh.geometry.clone(), mesh.materials.map((mat) => mat.clone()));
+    this.add(this.mesh);
   }
 
   abstract update(frameTime?: number): void;
@@ -17,19 +21,19 @@ abstract class GameObject extends THREE.Mesh {
  * Level is just the level mesh.
  */
 class Level extends GameObject {
-  material: THREE.MeshPhongMaterial[];
-
   constructor() {
     super(Game.levelMesh);
 
-    this.material[0].emissiveIntensity = 0.4;
-    this.material[0].emissive = new THREE.Color(0x404040);
+    const material = this.mesh.material as THREE.MeshPhongMaterial[];
 
-    this.material[1].emissiveIntensity = 0.4;
-    this.material[1].emissive = new THREE.Color(0x101060);
+    material[0].emissiveIntensity = 0.4;
+    material[0].emissive = new THREE.Color(0x404040);
 
-    this.material[2].emissiveIntensity = 0.4;
-    this.material[2].emissive = new THREE.Color(0x101010);
+    material[1].emissiveIntensity = 0.4;
+    material[1].emissive = new THREE.Color(0x101060);
+
+    material[2].emissiveIntensity = 0.4;
+    material[2].emissive = new THREE.Color(0x101010);
   }
 
   update(frameTime?: number) {}
@@ -132,8 +136,8 @@ class Player extends GameObject {
     const angleX = data.axes[2];
     const angleY = data.axes[3];
 
-    if (!(angleX > -0.1 && angleX < 0.1) && !(angleY > -0.1 && angleY > 0.1)) {
-      this.rotation.set(0, 0, Math.atan2(angleX, angleY));
+    if (!(angleX > -0.1 && angleX < 0.1) || !(angleY > -0.1 && angleY > 0.1)) {
+      this.mesh.rotation.set(0, Math.atan2(angleX, angleY) + (Math.PI / 2), 0);
     }
 
     this.lastUpdate = time;
