@@ -285,15 +285,7 @@ class Turret extends GameObject {
 
   update(frameTime?: number) {
     // Point at the player.
-    const targetPosition = this.game.getPlayerPosition();
-    const targetDirection = new THREE
-                                .Vector3(
-                                    this.position.x - targetPosition.x, 0,
-                                    this.position.z - targetPosition.z)
-                                .normalize();
-
-    this.mesh.rotation.set(
-        0, Math.atan2(targetDirection.y, targetDirection.x), 0);
+    const targetPosition = this.game.getPlayerPosition().clone();
 
     // Maybe fire a bullet
   }
