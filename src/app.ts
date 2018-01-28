@@ -116,16 +116,17 @@ class Player extends GameObject {
                            .multiplyScalar(time - this.lastUpdate)
                            .multiplyScalar(this.speed);
 
-    this.raycaster.set(this.position, moveVector);
+    this.raycaster.set(this.position, moveVector.clone().normalize());
 
     const intersections =
-        this.raycaster.intersectObjects(this.owner.getObjects(this));
+        this.raycaster.intersectObjects(this.owner.getObjects());
 
-    const colides =
-        intersections.filter((int) => int.object !== this && int.distance < 1)
-            .length > 0;
+    const collides =
+        intersections.filter((int) => int.object !== this && int.distance < 2);
 
-    if (!colides) {
+    console.log(collides);
+
+    if (!(collides.length > 1)) {
       this.position.add(moveVector);
     }
 
@@ -233,8 +234,8 @@ class Game {
     return this.level;
   }
 
-  getObjects(exclude?: THREE.Object3D) {
-    return this.scene.children.filter((obj) => obj === exclude);
+  getObjects() {
+    return this.scene.children;
   }
 
   private onResize() {
