@@ -25,13 +25,11 @@ abstract class GameObject extends THREE.Object3D {
   abstract update(frameTime?: number): void;
 
   protected collides(vector: THREE.Vector3, distance: number) {
-    this.raycaster.set(
-        this.position, vector.clone().normalize().multiplyScalar(distance));
+    this.raycaster.set(this.position, vector.clone());
 
-    const intersections =
-        this.raycaster.intersectObjects(this.game.getObjects());
+    const objs = this.game.getObjects();
 
-    console.log(intersections);
+    const intersections = this.raycaster.intersectObjects(objs, true);
 
     const collides = intersections.filter(
         (int) => int.object !== this && int.distance < distance);
@@ -198,8 +196,6 @@ class Player extends GameObject {
                                .normalize();
 
     const laserCollides = this.collides(rotationVector, 100);
-
-    console.log(laserCollides);
 
     const laserTarget = laserCollides.filter(
         (inter) =>
