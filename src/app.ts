@@ -53,6 +53,9 @@ class Player extends GameObject {
 
   private raycaster: THREE.Raycaster;
 
+  private leftTriggerPressed = true;
+  private rightTriggerPressed = true;
+
   constructor(private owner: Game) {
     super(Game.playerMesh);
 
@@ -140,6 +143,17 @@ class Player extends GameObject {
       this.mesh.rotation.set(0, Math.atan2(angleX, angleY) + (Math.PI / 2), 0);
     }
 
+    const leftTriggerPressed = data.buttons[7].pressed;
+    const rightTriggerPressed = data.buttons[8].pressed;
+
+    if (leftTriggerPressed && !this.leftTriggerPressed) {
+      this.fire();
+    }
+
+    if (rightTriggerPressed && !this.rightTriggerPressed) {
+      this.teleport();
+    }
+
     this.lastUpdate = time;
   }
 
@@ -153,6 +167,14 @@ class Player extends GameObject {
         (int) => int.object !== this && int.distance < distance);
 
     return collides;
+  }
+
+  private fire() {
+    console.log('fire');
+  }
+
+  private teleport() {
+    console.log('teleport');
   }
 }
 
