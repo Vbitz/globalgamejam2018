@@ -289,7 +289,21 @@ class Bullet extends GameObject {
 
     const moveAmount = this.speed * (time - this.lastUpdate);
 
-    const collides = this.collides(moveVector, moveAmount * 2);
+    const collides = this.collides(moveVector, moveAmount * 2).filter((int) => {
+      if (int.object === this.owner) {
+        return this.hitsOwner;
+      }
+      // We don't hit other bullets
+      if (int.object instanceof Bullet) {
+        return false;
+      } else {
+        if (int.object instanceof Turret && this.owner instanceof Turret) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    });
 
     if (!(collides.length > 1)) {
       this.position.add(moveVector.multiplyScalar(moveAmount));
