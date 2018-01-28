@@ -171,21 +171,15 @@ class Player extends GameObject {
 
     this.rightTriggerPressed = rightTriggerPressed;
 
-    console.log(this.mesh.rotation.y);
-
     // Update lazar
     const rotationVector = new THREE.Vector3(
         Math.cos(this.mesh.rotation.y), 0, -Math.sin(this.mesh.rotation.y));
 
     const laserCollides = this.collides(rotationVector, 100);
 
-    console.log(laserCollides);
-
     const laserTarget = laserCollides.filter(
         (inter) =>
             inter.object instanceof Level || inter.object instanceof Turret);
-
-    console.log(laserTarget);
 
     if (laserTarget.length > 1) {
       this.lineGeometry.vertices = [
@@ -217,7 +211,7 @@ class Player extends GameObject {
 
   private fire() {
     this.owner.addObject(new Bullet(
-        this.owner, this, false, this.getWorldPosition(), this.rotation.y,
+        this.owner, this, false, this.getWorldPosition(), this.mesh.rotation.y,
         0.75));
   }
 
@@ -250,21 +244,20 @@ class Bullet extends GameObject {
       private fireAngle: number, private fireDistance: number) {
     super(Game.bulletMesh);
 
-    this.scale.set(0.25, 0.25, 0.25);
+    const material = this.mesh.material as THREE.MeshPhongMaterial[];
+
+    material[0].emissiveIntensity = 0.4;
+    material[0].emissive = new THREE.Color(0xffffff);
+
+    this.scale.set(0.15, 0.15, 0.15);
 
     this.position.copy(this.firePosition);
 
-    this.rotation.set(0, fireAngle, 0);
+    console.log(fireAngle);
 
     this.position.add(
-        new THREE.Vector3(Math.cos(fireAngle), 0, Math.sin(fireAngle))
+        new THREE.Vector3(Math.cos(fireAngle), 0, -Math.sin(fireAngle))
             .multiplyScalar(fireDistance));
-
-    const light = new THREE.PointLight(0x1010aa, 0.3, 10);
-
-    light.position.setZ(1);
-
-    this.add(light);
   }
 
   update(frameTime?: number) {}
