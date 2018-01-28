@@ -283,7 +283,12 @@ class Turret extends GameObject {
     this.position.setY(0.5);
   }
 
-  update(frameTime?: number) {}
+  update(frameTime?: number) {
+    // Point at the player.
+    const targetPositon = this.game.getPlayerPosition();
+
+    // Maybe fire a bullet
+  }
 
   onHitByBullet() {
     // Die
@@ -506,12 +511,20 @@ class Game {
   private spawnTurret() {
     const otherTurrets =
         this.getObjects().filter((obj) => obj instanceof Turret);
-    if (otherTurrets.length > 5) {
+
+    if (otherTurrets.length > 4) {
       return;
     }
 
     const newPosition = new THREE.Vector3(
         THREE.Math.randFloat(-6.5, 6.5), 0, THREE.Math.randFloat(-6.5, 6.5));
+
+    const closetTurret = Math.min(
+        ...otherTurrets.map((t) => t.position.distanceTo(newPosition)));
+
+    if (closetTurret < 4) {
+      return;
+    }
 
     const newTurret = new Turret(this);
 
