@@ -81,6 +81,8 @@ class Player extends GameObject {
 
   private currentHealth = 5;
 
+  private lastHit: number = 0;
+
   constructor(game: Game) {
     super(game, Game.playerMesh);
 
@@ -224,10 +226,20 @@ class Player extends GameObject {
   }
 
   onHitByBullet() {
+    if (this.lastHit === 0) {
+      this.lastHit = this.lastUpdate;
+    }
+    if (this.lastHit > this.lastUpdate + 2) {
+      return;
+    }
     this.currentHealth -= 1;
     if (this.currentHealth === 0) {
       this.game.die();
     }
+  }
+
+  getHealth() {
+    return this.currentHealth;
   }
 
   private fire() {
@@ -302,7 +314,7 @@ class Turret extends GameObject {
     this.rotation.set(0, angle + (Math.PI), 0);
 
     // Maybe fire a bullet
-    if (this.lastUpdate > this.lastFire + 0.5) {
+    if (this.lastUpdate > this.lastFire + 0.1) {
       this.game.addObject(new Bullet(
           this.game, this, true, this.position.clone().setY(0.5), angle, 1.25));
       this.lastFire = this.lastUpdate;
@@ -421,6 +433,7 @@ class Game {
 
   private container: HTMLDivElement;
   private scoreDisplay: HTMLSpanElement;
+  private healthDisplay: HTMLSpanElement;
 
   private raycaster: THREE.Raycaster;
   private mainTarget: THREE.WebGLRenderTarget;
@@ -443,6 +456,7 @@ class Game {
 
     this.container = document.querySelector('#container') || expect();
     this.scoreDisplay = document.querySelector('#scoreDisplay') || expect();
+    this.healthDisplay = document.querySelector('#healthDisplay') || expect();
 
     this.renderer = new THREE.WebGLRenderer({antialias: true});
 
@@ -506,7 +520,6 @@ class Game {
 
   addScore(score: number) {
     this.currentScore += score;
-    this.scoreDisplay.innerText = this.currentScore.toString(10);
   }
 
   die() {
@@ -539,6 +552,9 @@ class Game {
     this.renderer.render(this.screenScene, this.screenCamera);
 
     requestAnimationFrame(this.update.bind(this));
+
+    this.scoreDisplay.innerText = this.currentScore.toString(10);
+    this.healthDisplay.innerText = this.player.getHealth();
 
     this.lastUpdate = time;
   }
