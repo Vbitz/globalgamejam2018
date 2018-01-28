@@ -236,7 +236,9 @@ class Turret extends GameObject {
  * bullets but players can't.
  */
 class Bullet extends GameObject {
-  private speed: 10;
+  private speed: 1;
+
+  private lastUpdate: number = 0;
 
   constructor(
       private game: Game, private owner: Player|Turret,
@@ -247,7 +249,11 @@ class Bullet extends GameObject {
     const material = this.mesh.material as THREE.MeshPhongMaterial[];
 
     material[0].emissiveIntensity = 0.4;
-    material[0].emissive = new THREE.Color(0xffffff);
+    if (owner instanceof Player) {
+      material[0].emissive = new THREE.Color(0x00ff00);
+    } else if (owner instanceof Turret) {
+      material[0].emissive = new THREE.Color(0xff0000);
+    }
 
     this.scale.set(0.15, 0.15, 0.15);
 
@@ -256,11 +262,32 @@ class Bullet extends GameObject {
     console.log(fireAngle);
 
     this.position.add(
-        new THREE.Vector3(Math.cos(fireAngle), 0, -Math.sin(fireAngle))
+        new THREE
+            .Vector3(Math.cos(this.fireAngle), 0, -Math.sin(this.fireAngle))
             .multiplyScalar(fireDistance));
   }
 
-  update(frameTime?: number) {}
+  update(frameTime?: number) {
+    const time = (frameTime || 0) / 1000;
+
+    if (this.lastUpdate === 0) {
+      this.lastUpdate = time || 0;
+    }
+
+    console.log(
+        this.lastUpdate, time - this.lastUpdate,
+        this.speed * (time - this.lastUpdate));
+
+    this.position.add(
+        new THREE
+            .Vector3(Math.cos(this.fireAngle), 0, -Math.sin(this.fireAngle))
+            .normalize()
+            .multiplyScalar(this.speed * (time - this.lastUpdate)));
+
+    // Update lastUpdate
+
+    this.lastUpdate = time;
+  }
 }
 
 class Game {
