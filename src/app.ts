@@ -53,6 +53,8 @@ class Player extends GameObject {
 
   private raycaster: THREE.Raycaster;
 
+  private lineGeometry: THREE.Geometry;
+
   private leftTriggerPressed = true;
   private rightTriggerPressed = true;
 
@@ -76,7 +78,12 @@ class Player extends GameObject {
 
     this.position.setY(0.5);
 
-    this.raycaster = new THREE.Raycaster;
+    this.lineGeometry = new THREE.Geometry();
+
+    this.add(new THREE.Line(
+        this.lineGeometry, new THREE.LineBasicMaterial({color: 0xff0000})));
+
+    this.raycaster = new THREE.Raycaster();
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -108,6 +115,8 @@ class Player extends GameObject {
 
     const data = navigator.getGamepads()[this.gamepad.index];
 
+    // Try movement
+
     let x = data.axes[0];
     let y = data.axes[1];
 
@@ -136,6 +145,8 @@ class Player extends GameObject {
           new THREE.Vector3(6.75, 0.5, 6.75));
     }
 
+    // Update turret angle.
+
     const angleX = data.axes[2];
     const angleY = data.axes[3];
 
@@ -143,16 +154,31 @@ class Player extends GameObject {
       this.mesh.rotation.set(0, Math.atan2(angleX, angleY) + (Math.PI / 2), 0);
     }
 
+    // Check for buttons pressed.
+
     const leftTriggerPressed = data.buttons[7].pressed;
-    const rightTriggerPressed = data.buttons[8].pressed;
+    const rightTriggerPressed = data.buttons[6].pressed;
 
     if (leftTriggerPressed && !this.leftTriggerPressed) {
       this.fire();
     }
 
+    this.leftTriggerPressed = leftTriggerPressed;
+
     if (rightTriggerPressed && !this.rightTriggerPressed) {
       this.teleport();
     }
+
+    this.rightTriggerPressed = rightTriggerPressed;
+
+    // Update lazar
+    const rotationVector = new THREE.Vector3(
+        Math.cos(this.mesh.rotation.y), 0, Math.sin(this.mesh.rotation.y));
+
+    const lazerCollides = this.collides(rotationVector, 100);
+
+
+    // Update lastUpdate
 
     this.lastUpdate = time;
   }
