@@ -217,10 +217,14 @@ class Player extends GameObject {
     this.lastUpdate = time;
   }
 
+  onHitByBullet() {
+    // TODO
+  }
+
   private fire() {
     this.game.addObject(new Bullet(
         this.game, this, false, this.getWorldPosition(), this.mesh.rotation.y,
-        0.75));
+        1));
   }
 
   private teleport() {
@@ -237,6 +241,10 @@ class Turret extends GameObject {
   }
 
   update(frameTime?: number) {}
+
+  onHitByBullet() {
+    // TODO
+  }
 }
 
 /**
@@ -289,15 +297,18 @@ class Bullet extends GameObject {
 
     const moveAmount = this.speed * (time - this.lastUpdate);
 
-    const collides = this.collides(moveVector, moveAmount * 2).filter((int) => {
-      if (int.object === this.owner) {
+    const rawCollides = this.collides(moveVector, moveAmount * 2);
+
+    const collides = rawCollides.filter((int) => {
+      const obj = int.object.parent;
+      if (obj === this.owner) {
         return this.hitsOwner;
       }
       // We don't hit other bullets
-      if (int.object instanceof Bullet) {
+      if (obj instanceof Bullet) {
         return false;
       } else {
-        if (int.object instanceof Turret && this.owner instanceof Turret) {
+        if (obj instanceof Turret && this.owner instanceof Turret) {
           return false;
         } else {
           return true;
@@ -305,9 +316,17 @@ class Bullet extends GameObject {
       }
     });
 
-    if (!(collides.length > 1)) {
+    console.log(rawCollides, collides);
+
+    if (collides.length === 0) {
       this.position.add(moveVector.multiplyScalar(moveAmount));
     } else {
+      const obj = collides[0].object.parent;
+      if (obj instanceof Player) {
+        obj.onHitByBullet();
+      } else if (obj instanceof Turret) {
+        obj.onHitByBullet();
+      }
       this.parent.remove(this);
     }
 
