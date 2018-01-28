@@ -24,11 +24,14 @@ abstract class GameObject extends THREE.Object3D {
 
   abstract update(frameTime?: number): void;
 
-  private collides(vector: THREE.Vector3, distance: number) {
-    this.raycaster.set(this.position, vector.clone().normalize());
+  protected collides(vector: THREE.Vector3, distance: number) {
+    this.raycaster.set(
+        this.position, vector.clone().normalize().multiplyScalar(distance));
 
     const intersections =
         this.raycaster.intersectObjects(this.game.getObjects());
+
+    console.log(intersections);
 
     const collides = intersections.filter(
         (int) => int.object !== this && int.distance < distance);
@@ -188,10 +191,15 @@ class Player extends GameObject {
     this.rightTriggerPressed = rightTriggerPressed;
 
     // Update lazar
-    const rotationVector = new THREE.Vector3(
-        Math.cos(this.mesh.rotation.y), 0, -Math.sin(this.mesh.rotation.y));
+    const rotationVector = new THREE
+                               .Vector3(
+                                   Math.cos(this.mesh.rotation.y), 0,
+                                   -Math.sin(this.mesh.rotation.y))
+                               .normalize();
 
     const laserCollides = this.collides(rotationVector, 100);
+
+    console.log(laserCollides);
 
     const laserTarget = laserCollides.filter(
         (inter) =>
@@ -228,8 +236,8 @@ class Player extends GameObject {
  * Turret is computer controlled. It shoots bullets.
  */
 class Turret extends GameObject {
-  constructor() {
-    super(Game.turretMesh);
+  constructor(game: Game) {
+    super(game, Game.turretMesh);
   }
 
   update(frameTime?: number) {}
@@ -245,10 +253,10 @@ class Bullet extends GameObject {
   private lastUpdate: number = 0;
 
   constructor(
-      private game: Game, private owner: Player|Turret,
-      private hitsOwner: boolean, private firePosition: THREE.Vector3,
-      private fireAngle: number, private fireDistance: number) {
-    super(Game.bulletMesh);
+      game: Game, private owner: Player|Turret, private hitsOwner: boolean,
+      private firePosition: THREE.Vector3, private fireAngle: number,
+      private fireDistance: number) {
+    super(game, Game.bulletMesh);
 
     const material = this.mesh.material as THREE.MeshPhongMaterial[];
 
@@ -256,18 +264,6 @@ class Bullet extends GameObject {
     if (owner instanceof Player) {
       material[0].emissive = new THREE.Color(0x00ff00);
     } else if (owner instanceof Turret) {
-      const collides = this.collides(moveVector, 1);
-
-      if (!(collides.length > 1)) {
-        this.position.add(moveVector);
-
-        // Fix small issues with collision and prevent the player from breaking
-        // the game.
-        this.position.clamp(
-            new THREE.Vector3(-6.75, 0.5, -6.75),
-            new THREE.Vector3(6.75, 0.5, 6.75));
-      }
-
       material[0].emissive = new THREE.Color(0xff0000);
     }
 
@@ -291,24 +287,19 @@ class Bullet extends GameObject {
     }
 
     const moveVector =
-
-        const collides = this.collides(moveVector, 1);
-
-    if (!(collides.length > 1)) {
-      this.position.add(moveVector);
-
-      // Fix small issues with collision and prevent the player from breaking
-      // the game.
-      this.position.clamp(
-          new THREE.Vector3(-6.75, 0.5, -6.75),
-          new THREE.Vector3(6.75, 0.5, 6.75));
-    }
-
-    this.position.add(
         new THREE
             .Vector3(Math.cos(this.fireAngle), 0, -Math.sin(this.fireAngle))
-            .normalize()
-            .multiplyScalar(this.speed * (time - this.lastUpdate)));
+            .normalize();
+
+    const moveAmount = this.speed * (time - this.lastUpdate);
+
+    const collides = this.collides(moveVector, moveAmount * 2);
+
+    if (!(collides.length > 1)) {
+      this.position.add(moveVector.multiplyScalar(moveAmount));
+    } else {
+      this.parent.remove(this);
+    }
 
     // Update lastUpdate
 
@@ -368,7 +359,7 @@ class Game {
     this.screenCamera.position.setZ(100);
     this.screenCamera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this.level = new Level();
+    this.level = new Level(this);
 
     this.scene.add(this.level);
 
