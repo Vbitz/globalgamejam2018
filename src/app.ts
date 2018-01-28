@@ -197,7 +197,7 @@ class Player extends GameObject {
     this.rightTriggerPressed = rightTriggerPressed;
 
     // Update lazar
-    const rotationVector = new THREE.negate()
+    const rotationVector = new THREE
                                .Vector3(
                                    Math.cos(this.mesh.rotation.y), 0,
                                    -Math.sin(this.mesh.rotation.y))
@@ -230,9 +230,13 @@ class Player extends GameObject {
   }
 
   private fire() {
+    if (this.lastUpdate < this.lastFire + 0.2) {
+      return;
+    }
     this.game.addObject(new Bullet(
         this.game, this, false, this.getWorldPosition(), this.mesh.rotation.y,
         1));
+    this.lastFire = this.lastUpdate;
   }
 
   private teleport() {
@@ -251,7 +255,8 @@ class Turret extends GameObject {
   update(frameTime?: number) {}
 
   onHitByBullet() {
-    // TODO
+    // Die
+    this.parent.remove(this);
   }
 }
 
@@ -365,6 +370,8 @@ class Game {
   private player: Player;
 
   private playerCamera: THREE.PerspectiveCamera;
+
+  private lastSpawn: number;
 
   init() {
     this.loadAllMeshes();
