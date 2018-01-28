@@ -222,7 +222,7 @@ class Player extends GameObject {
   }
 
   onHitByBullet() {
-    // TODO
+    this.game.addScore(-1000);
   }
 
   private fire() {
@@ -265,7 +265,8 @@ class Player extends GameObject {
  * Turret is computer controlled. It shoots bullets.
  */
 class Turret extends GameObject {
-  private lastFire: number;
+  private lastFire: number = 0;
+  private lastUpdate: number = 0;
 
   constructor(game: Game) {
     super(game, Game.turretMesh);
@@ -282,6 +283,7 @@ class Turret extends GameObject {
   }
 
   update(frameTime?: number) {
+    const time = (frameTime || 0) / 1000;
     // Point at the player.
     const targetPosition = this.game.getPlayerPosition().clone();
 
@@ -293,13 +295,21 @@ class Turret extends GameObject {
     this.rotation.set(0, angle + (Math.PI), 0);
 
     // Maybe fire a bullet
-    this.game.addObject(new Bullet(
-        this.game, this, true, this.position.clone().setZ(1), angle, 2));
+    if (this.lastUpdate > this.lastFire + 0.5) {
+      this.game.addObject(new Bullet(
+          this.game, this, true, this.position.clone().setY(0.5), angle, 1.25));
+      this.lastFire = this.lastUpdate;
+    }
+
+    // Update lastUpdate
+
+    this.lastUpdate = time;
   }
 
   onHitByBullet() {
     // Die
     this.parent.remove(this);
+    this.game.addScore(100);
   }
 }
 
@@ -328,7 +338,7 @@ class Bullet extends GameObject {
       material[0].emissive = new THREE.Color(0xff0000);
     }
 
-    this.scale.set(0.15, 0.15, 0.15);
+    this.scale.set(0.25, 0.25, 0.25);
 
     this.position.copy(this.firePosition);
 
