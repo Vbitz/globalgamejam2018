@@ -175,7 +175,7 @@ class Player extends GameObject {
 
     // Update lazar
     const rotationVector = new THREE.Vector3(
-        Math.cos(this.mesh.rotation.y), 0, Math.sin(this.mesh.rotation.y));
+        Math.cos(this.mesh.rotation.y), 0, -Math.sin(this.mesh.rotation.y));
 
     const laserCollides = this.collides(rotationVector, 100);
 
@@ -188,13 +188,13 @@ class Player extends GameObject {
     console.log(laserTarget);
 
     if (laserTarget.length > 1) {
-      this.lineGeometry.vertices =
-          [this.position.clone(), laserTarget[0].point.clone()];
-    } else {
       this.lineGeometry.vertices = [
-        this.position.clone(),
-        this.position.clone().add(rotationVector.clone().multiplyScalar(100))
+        new THREE.Vector3(),
+        this.position.clone().sub(laserTarget[0].point.clone())
       ];
+    } else {
+      this.lineGeometry.vertices =
+          [new THREE.Vector3(), rotationVector.clone().multiplyScalar(100)];
     }
     this.lineGeometry.verticesNeedUpdate = true;
 
