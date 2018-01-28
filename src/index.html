@@ -27,15 +27,26 @@
       color: greenyellow;
       font-size: 200%;
     }
+
+    .health {
+      font-family: monospace;
+      font-weight: bold;
+      color: crimson;
+      font-size: 200%;
+    }
   </style>
 </head>
 
 <body>
   <div class="help">
-    <div class="score">
+    <span class="score">
       Score:
       <span id="scoreDisplay">0</span>
-    </div>
+    </span>
+    <span class="health">
+      Health:
+      <span id="healthDisplay">0</span>
+    </span>
     <pre>
 Plug in a Gamepad
 
@@ -44,6 +55,9 @@ Right Thumbstick to Aim
       
 Right Trigger to Shoot
 Left Trigger on a Turret to Teleport
+
+Don't get shot by the turrets.
+Teleport to Regain Health.
     </pre>
   </div>
   <div id="container"></div>

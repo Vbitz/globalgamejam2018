@@ -262,6 +262,8 @@ class Player extends GameObject {
       this.position.clamp(
           new THREE.Vector3(-6.75, 0.5, -6.75),
           new THREE.Vector3(6.75, 0.5, 6.75));
+
+      this.currentHealth = THREE.Math.clamp(this.currentHealth + 1, 1, 5);
     }
   }
 }
@@ -505,6 +507,10 @@ class Game {
   addScore(score: number) {
     this.currentScore += score;
     this.scoreDisplay.innerText = this.currentScore.toString(10);
+  }
+
+  die() {
+    window.location.reload();
   }
 
   private onResize() {
