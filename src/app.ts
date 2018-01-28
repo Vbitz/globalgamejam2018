@@ -155,9 +155,7 @@ class Player extends GameObject {
                            .multiplyScalar(this.speed);
 
     const collides = this.collides(moveVector, 1).filter((int) => {
-      return int.object.parent instanceof GameObject &&
-          !(int.object instanceof THREE.Line) &&
-          !(int.object.parent instanceof Bullet);
+      return int.object.parent instanceof Turret;
     });
 
     console.log(collides);
@@ -373,6 +371,9 @@ class Bullet extends GameObject {
         obj.onHitByBullet();
       }
       this.parent.remove(this);
+      this.position.clamp(
+          new THREE.Vector3(-6.75, 0.5, -6.75),
+          new THREE.Vector3(6.75, 0.5, 6.75));
     }
 
     // Update lastUpdate
@@ -466,6 +467,10 @@ class Game {
 
   addObject(gameObject: GameObject) {
     this.scene.add(gameObject);
+  }
+
+  getPlayerPosition(): THREE.Vector3 {
+    return this.player.position;
   }
 
   private onResize() {
