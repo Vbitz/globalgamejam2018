@@ -216,7 +216,8 @@ class Player extends GameObject {
   }
 
   private fire() {
-    console.log('fire');
+    this.owner.addObject(new Bullet(
+        this.owner, this, false, this.getWorldPosition(), this.rotation.y));
   }
 
   private teleport() {
@@ -240,8 +241,17 @@ class Turret extends GameObject {
  * bullets but players can't.
  */
 class Bullet extends GameObject {
-  constructor(owner: Player|Turret, hitsOwner: boolean) {
+  private speed: 10;
+
+  constructor(
+      private game: Game, private owner: Player|Turret,
+      private hitsOwner: boolean, private firePosition: THREE.Vector3,
+      private fireAngle: number) {
     super(Game.bulletMesh);
+
+    this.position = this.firePosition.clone();
+
+    this.rotation.set(0, fireAngle, 0);
   }
 
   update(frameTime?: number) {}
@@ -326,6 +336,10 @@ class Game {
 
   getObjects() {
     return this.scene.children;
+  }
+
+  addObject(gameObject: GameObject) {
+    this.scene.add(gameObject);
   }
 
   private onResize() {
