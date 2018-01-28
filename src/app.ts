@@ -240,7 +240,24 @@ class Player extends GameObject {
   }
 
   private teleport() {
-    console.log('teleport');
+    const rotationVector = new THREE
+                               .Vector3(
+                                   Math.cos(this.mesh.rotation.y), 0,
+                                   -Math.sin(this.mesh.rotation.y))
+                               .normalize();
+
+    const laserCollides = this.collides(rotationVector, 100);
+
+    const laserTarget =
+        laserCollides.filter((inter) => inter.object.parent instanceof Turret);
+
+    if (laserTarget.length > 0) {
+      const turretPosition = laserTarget[0].object.parent.position;
+      const thisPosition = this.position;
+
+      this.position.copy(turretPosition);
+      laserTarget[0].object.parent.position.copy(thisPosition);
+    }
   }
 }
 
@@ -253,7 +270,7 @@ class Turret extends GameObject {
   constructor(game: Game) {
     super(game, Game.turretMesh);
 
-    this.scale.set(0.25, 0.25, 0.25);
+    this.scale.set(0.5, 0.5, 0.5);
 
     const light = new THREE.PointLight(0xea1010, 0.3, 10);
 
