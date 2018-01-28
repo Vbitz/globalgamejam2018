@@ -81,7 +81,7 @@ class Player extends GameObject {
     this.lineGeometry = new THREE.Geometry();
 
     this.add(new THREE.Line(
-        this.lineGeometry, new THREE.LineBasicMaterial({color: 0xff0000})));
+        this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00})));
 
     this.raycaster = new THREE.Raycaster();
   }
@@ -171,12 +171,32 @@ class Player extends GameObject {
 
     this.rightTriggerPressed = rightTriggerPressed;
 
+    console.log(this.mesh.rotation.y);
+
     // Update lazar
     const rotationVector = new THREE.Vector3(
         Math.cos(this.mesh.rotation.y), 0, Math.sin(this.mesh.rotation.y));
 
-    const lazerCollides = this.collides(rotationVector, 100);
+    const laserCollides = this.collides(rotationVector, 100);
 
+    console.log(laserCollides);
+
+    const laserTarget = laserCollides.filter(
+        (inter) =>
+            inter.object instanceof Level || inter.object instanceof Turret);
+
+    console.log(laserTarget);
+
+    if (laserTarget.length > 1) {
+      this.lineGeometry.vertices =
+          [this.position.clone(), laserTarget[0].point.clone()];
+    } else {
+      this.lineGeometry.vertices = [
+        this.position.clone(),
+        this.position.clone().add(rotationVector.clone().multiplyScalar(100))
+      ];
+    }
+    this.lineGeometry.verticesNeedUpdate = true;
 
     // Update lastUpdate
 
