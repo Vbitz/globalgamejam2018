@@ -50,8 +50,8 @@ class Level extends GameObject {
     material[0].emissiveIntensity = 0.4;
     material[0].emissive = new THREE.Color(0x404040);
 
-    material[1].emissiveIntensity = 0.4;
-    material[1].emissive = new THREE.Color(0x101060);
+    material[1].emissiveIntensity = 0.7;
+    material[1].emissive = new THREE.Color(0x101080);
 
     material[2].emissiveIntensity = 0.4;
     material[2].emissive = new THREE.Color(0x101010);
@@ -308,7 +308,7 @@ class Turret extends GameObject {
     this.rotation.set(0, angle + (Math.PI), 0);
 
     // Maybe fire a bullet
-    if (this.lastUpdate > this.lastFire + 0.1) {
+    if (this.lastUpdate > this.lastFire + 0.5) {
       this.game.addObject(new Bullet(
           this.game, this, true, this.position.clone().setY(0.5), angle, 1.25));
       this.lastFire = this.lastUpdate;
@@ -331,7 +331,7 @@ class Turret extends GameObject {
  * bullets but players can't.
  */
 class Bullet extends GameObject {
-  private speed: number = 10;
+  private speed: number = 5;
 
   private lastUpdate: number = 0;
 
@@ -533,7 +533,7 @@ class Game {
   private update(frameTime?: number) {
     const time = (frameTime || 0) / 1000;
 
-    if (this.lastUpdate > this.lastSpawn + 2) {
+    if (this.lastUpdate > this.lastSpawn + 0.5) {
       this.spawnTurret();
       this.lastSpawn = this.lastUpdate;
     }
@@ -560,7 +560,7 @@ class Game {
     const otherTurrets =
         this.getObjects().filter((obj) => obj instanceof Turret);
 
-    if (otherTurrets.length > 4) {
+    if (otherTurrets.length > 9) {
       return;
     }
 
