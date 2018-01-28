@@ -79,6 +79,8 @@ class Player extends GameObject {
 
   private lastFire: number;
 
+  private currentHealth = 5;
+
   constructor(game: Game) {
     super(game, Game.playerMesh);
 
@@ -222,7 +224,10 @@ class Player extends GameObject {
   }
 
   onHitByBullet() {
-    this.game.addScore(-1000);
+    this.currentHealth -= 1;
+    if (this.currentHealth === 0) {
+      this.game.die();
+    }
   }
 
   private fire() {
@@ -413,6 +418,7 @@ class Game {
   private scene: THREE.Scene;
 
   private container: HTMLDivElement;
+  private scoreDisplay: HTMLSpanElement;
 
   private raycaster: THREE.Raycaster;
   private mainTarget: THREE.WebGLRenderTarget;
@@ -428,10 +434,13 @@ class Game {
   private lastSpawn: number = 0;
   private lastUpdate: number = 0;
 
+  private currentScore = 0;
+
   init() {
     this.loadAllMeshes();
 
     this.container = document.querySelector('#container') || expect();
+    this.scoreDisplay = document.querySelector('#scoreDisplay') || expect();
 
     this.renderer = new THREE.WebGLRenderer({antialias: true});
 
@@ -491,6 +500,11 @@ class Game {
 
   getPlayerPosition(): THREE.Vector3 {
     return this.player.position;
+  }
+
+  addScore(score: number) {
+    this.currentScore += score;
+    this.scoreDisplay.innerText = this.currentScore.toString(10);
   }
 
   private onResize() {

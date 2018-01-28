@@ -20,19 +20,30 @@
       left: 10px;
       color: greenyellow;
     }
+
+    .score {
+      font-family: monospace;
+      font-weight: bold;
+      color: greenyellow;
+      font-size: 200%;
+    }
   </style>
 </head>
 
 <body>
   <div class="help">
+    <div class="score">
+      Score:
+      <span id="scoreDisplay">0</span>
+    </div>
     <pre>
-      Plug in a Gamepad
+Plug in a Gamepad
 
-      Left Thumbstick to Move
-      Right Thumbstick to Aim
+Left Thumbstick to Move
+Right Thumbstick to Aim
       
-      Right Trigger to Shoot
-      Left Trigger on a Turret to Teleport
+Right Trigger to Shoot
+Left Trigger on a Turret to Teleport
     </pre>
   </div>
   <div id="container"></div>
