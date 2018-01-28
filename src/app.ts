@@ -4,25 +4,45 @@ import {expect, LoadedMesh} from './common';
 
 abstract class GameObject extends THREE.Object3D {
   protected mesh: THREE.Mesh;
-  constructor(mesh: LoadedMesh) {
+
+  private raycaster: THREE.Raycaster;
+
+  constructor(protected game: Game, mesh: LoadedMesh) {
+    super();
+
     if (!mesh.materials) {
       throw new Error('Bad Mesh');
     }
-    super();
+
     this.mesh = new THREE.Mesh(
         mesh.geometry.clone(), mesh.materials.map((mat) => mat.clone()));
+
     this.add(this.mesh);
+
+    this.raycaster = new THREE.Raycaster();
   }
 
   abstract update(frameTime?: number): void;
+
+  private collides(vector: THREE.Vector3, distance: number) {
+    this.raycaster.set(this.position, vector.clone().normalize());
+
+    const intersections =
+        this.raycaster.intersectObjects(this.game.getObjects());
+
+    const collides = intersections.filter(
+        (int) => int.object !== this && int.distance < distance);
+
+    return collides;
+  }
 }
 
 /**
  * Level is just the level mesh.
  */
 class Level extends GameObject {
-  constructor() {
-    super(Game.levelMesh);
+  constructor(game: Game) {
+    super(game, Game.levelMesh);
 
     const material = this.mesh.material as THREE.MeshPhongMaterial[];
 
@@ -51,19 +71,17 @@ class Player extends GameObject {
 
   private speed = 5;
 
-  private raycaster: THREE.Raycaster;
-
   private lineGeometry: THREE.Geometry;
 
   private leftTriggerPressed = true;
   private rightTriggerPressed = true;
 
-  constructor(private owner: Game) {
-    super(Game.playerMesh);
+  constructor(game: Game) {
+    super(game, Game.playerMesh);
 
     this.camera = new THREE.PerspectiveCamera();
 
-    this.camera.position.set(0, 30, 10);
+    this.camera.position.set(0, 50, 20);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     this.scale.set(0.25, 0.25, 0.25);
@@ -82,8 +100,6 @@ class Player extends GameObject {
 
     this.add(new THREE.Line(
         this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00})));
-
-    this.raycaster = new THREE.Raycaster();
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -197,21 +213,9 @@ class Player extends GameObject {
     this.lastUpdate = time;
   }
 
-  private collides(vector: THREE.Vector3, distance: number) {
-    this.raycaster.set(this.position, vector.clone().normalize());
-
-    const intersections =
-        this.raycaster.intersectObjects(this.owner.getObjects());
-
-    const collides = intersections.filter(
-        (int) => int.object !== this && int.distance < distance);
-
-    return collides;
-  }
-
   private fire() {
-    this.owner.addObject(new Bullet(
-        this.owner, this, false, this.getWorldPosition(), this.mesh.rotation.y,
+    this.game.addObject(new Bullet(
+        this.game, this, false, this.getWorldPosition(), this.mesh.rotation.y,
         0.75));
   }
 
@@ -236,7 +240,7 @@ class Turret extends GameObject {
  * bullets but players can't.
  */
 class Bullet extends GameObject {
-  private speed: 1;
+  private speed: number = 10;
 
   private lastUpdate: number = 0;
 
@@ -252,6 +256,18 @@ class Bullet extends GameObject {
     if (owner instanceof Player) {
       material[0].emissive = new THREE.Color(0x00ff00);
     } else if (owner instanceof Turret) {
+      const collides = this.collides(moveVector, 1);
+
+      if (!(collides.length > 1)) {
+        this.position.add(moveVector);
+
+        // Fix small issues with collision and prevent the player from breaking
+        // the game.
+        this.position.clamp(
+            new THREE.Vector3(-6.75, 0.5, -6.75),
+            new THREE.Vector3(6.75, 0.5, 6.75));
+      }
+
       material[0].emissive = new THREE.Color(0xff0000);
     }
 
@@ -274,9 +290,19 @@ class Bullet extends GameObject {
       this.lastUpdate = time || 0;
     }
 
-    console.log(
-        this.lastUpdate, time - this.lastUpdate,
-        this.speed * (time - this.lastUpdate));
+    const moveVector =
+
+        const collides = this.collides(moveVector, 1);
+
+    if (!(collides.length > 1)) {
+      this.position.add(moveVector);
+
+      // Fix small issues with collision and prevent the player from breaking
+      // the game.
+      this.position.clamp(
+          new THREE.Vector3(-6.75, 0.5, -6.75),
+          new THREE.Vector3(6.75, 0.5, 6.75));
+    }
 
     this.position.add(
         new THREE
