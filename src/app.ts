@@ -64,8 +64,6 @@ class Level extends GameObject {
  * Player is player.json controlled by the player with a gamepad.
  */
 class Player extends GameObject {
-  private camera: THREE.PerspectiveCamera;
-
   private gamepad: Gamepad|null = null;
 
   private lastUpdate: number = 0;
@@ -86,13 +84,6 @@ class Player extends GameObject {
   constructor(game: Game) {
     super(game, Game.playerMesh);
 
-    this.camera = new THREE.PerspectiveCamera();
-
-    this.camera.position.set(0, 50, 20);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    this.add(this.camera);
-
     this.scale.set(0.25, 0.25, 0.25);
 
     const light = new THREE.PointLight(0x10ea10, 0.3, 10);
@@ -109,10 +100,6 @@ class Player extends GameObject {
         this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00}));
 
     this.add(this.line);
-  }
-
-  getCamera(): THREE.PerspectiveCamera {
-    return this.camera;
   }
 
   update(frameTime?: number) {
@@ -229,13 +216,18 @@ class Player extends GameObject {
     if (this.lastHit === 0) {
       this.lastHit = this.lastUpdate;
     }
-    if (this.lastHit > this.lastUpdate + 2) {
+
+    // 2 second invurnribility timer.
+    if (this.lastUpdate < this.lastHit + 2) {
       return;
     }
+
     this.currentHealth -= 1;
     if (this.currentHealth === 0) {
       this.game.die();
     }
+
+    this.lastHit = this.lastUpdate;
   }
 
   getHealth() {
@@ -243,12 +235,14 @@ class Player extends GameObject {
   }
 
   private fire() {
-    if (this.lastUpdate < this.lastFire + 0.2) {
+    if (this.lastUpdate < this.lastFire + 0.05) {
       return;
     }
+
     this.game.addObject(new Bullet(
         this.game, this, false, this.getWorldPosition(), this.mesh.rotation.y,
         1));
+
     this.lastFire = this.lastUpdate;
   }
 
@@ -429,6 +423,8 @@ class Game {
 
   private renderer: THREE.WebGLRenderer;
 
+  private camera: THREE.PerspectiveCamera;
+
   private scene: THREE.Scene;
 
   private container: HTMLDivElement;
@@ -443,8 +439,6 @@ class Game {
 
   private level: Level;
   private player: Player;
-
-  private playerCamera: THREE.PerspectiveCamera;
 
   private lastSpawn: number = 0;
   private lastUpdate: number = 0;
@@ -467,7 +461,7 @@ class Game {
     this.scene = new THREE.Scene();
 
     this.mainTarget = new THREE.WebGLRenderTarget(
-        640, 480,
+        320, 200,
         {minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter});
 
     this.screenScene = new THREE.Scene();
@@ -489,9 +483,12 @@ class Game {
 
     this.scene.add(this.player);
 
-    this.playerCamera = this.player.getCamera();
-
     this.container.appendChild(this.renderer.domElement);
+
+    this.camera = new THREE.PerspectiveCamera();
+
+    this.camera.position.set(0, 20, 5);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     window.addEventListener('resize', (ev) => {
       this.onResize();
@@ -529,8 +526,8 @@ class Game {
   private onResize() {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-    this.playerCamera.aspect = window.innerWidth / window.innerHeight;
-    this.playerCamera.updateProjectionMatrix();
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
   }
 
   private update(frameTime?: number) {
@@ -547,14 +544,14 @@ class Game {
       }
     });
 
-    this.renderer.render(this.scene, this.playerCamera, this.mainTarget, true);
+    this.renderer.render(this.scene, this.camera, this.mainTarget, true);
 
     this.renderer.render(this.screenScene, this.screenCamera);
 
     requestAnimationFrame(this.update.bind(this));
 
     this.scoreDisplay.innerText = this.currentScore.toString(10);
-    this.healthDisplay.innerText = this.player.getHealth();
+    this.healthDisplay.innerText = this.player.getHealth().toString();
 
     this.lastUpdate = time;
   }
