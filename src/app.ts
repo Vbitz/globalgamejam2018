@@ -121,11 +121,20 @@ class Player extends GameObject {
 
     if (!(collides.length > 1)) {
       this.position.add(moveVector);
+
+      // Fix small issues with collision and prevent the player from breaking
+      // the game.
+      this.position.clamp(
+          new THREE.Vector3(-6.75, 0.5, -6.75),
+          new THREE.Vector3(6.75, 0.5, 6.75));
     }
 
-    this.position.clamp(
-        new THREE.Vector3(-6.75, 0.5, -6.75),
-        new THREE.Vector3(6.75, 0.5, 6.75));
+    const angleX = data.axes[2];
+    const angleY = data.axes[3];
+
+    if (!(angleX > -0.1 && angleX < 0.1) && !(angleY > -0.1 && angleY > 0.1)) {
+      this.rotation.set(0, 0, Math.atan2(angleX, angleY));
+    }
 
     this.lastUpdate = time;
   }
