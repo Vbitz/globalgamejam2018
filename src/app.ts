@@ -151,7 +151,7 @@ class Player extends GameObject {
     const angleY = data.axes[3];
 
     if (!(angleX > -0.1 && angleX < 0.1) || !(angleY > -0.1 && angleY > 0.1)) {
-      this.mesh.rotation.set(0, Math.atan2(angleX, angleY) + (Math.PI / 2), 0);
+      this.mesh.rotation.set(0, Math.atan2(angleX, angleY) - (Math.PI / 2), 0);
     }
 
     // Check for buttons pressed.
@@ -240,7 +240,7 @@ class Turret extends GameObject {
  * bullets but players can't.
  */
 class Bullet extends GameObject {
-  constructor() {
+  constructor(owner: Player|Turret, hitsOwner: boolean) {
     super(Game.bulletMesh);
   }
 
