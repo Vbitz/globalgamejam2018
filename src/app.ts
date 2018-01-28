@@ -72,10 +72,12 @@ class Player extends GameObject {
 
   private speed = 5;
 
+  private line: THREE.Line;
   private lineGeometry: THREE.Geometry;
 
-  private leftTriggerPressed = true;
   private rightTriggerPressed = true;
+
+  private lastFire: number;
 
   constructor(game: Game) {
     super(game, Game.playerMesh);
@@ -99,12 +101,10 @@ class Player extends GameObject {
 
     this.lineGeometry = new THREE.Geometry();
 
-    const line = new THREE.Line(
+    this.line = new THREE.Line(
         this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00}));
 
-    line.scale.set(4, 4, 4);
-
-    this.add(line);
+    this.add(this.line);
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -154,10 +154,11 @@ class Player extends GameObject {
                            .multiplyScalar(time - this.lastUpdate)
                            .multiplyScalar(this.speed);
 
-    const collides = this.collides(moveVector, 1)
-                         .filter(
-                             (int) => int.object.parent instanceof GameObject &&
-                                 !(int.object instanceof THREE.Line));
+    const collides = this.collides(moveVector, 1).filter((int) => {
+      return int.object.parent instanceof GameObject &&
+          !(int.object instanceof THREE.Line) &&
+          !(int.object.parent instanceof Bullet);
+    });
 
     console.log(collides);
 
@@ -185,11 +186,9 @@ class Player extends GameObject {
     const leftTriggerPressed = data.buttons[7].pressed;
     const rightTriggerPressed = data.buttons[6].pressed;
 
-    if (leftTriggerPressed && !this.leftTriggerPressed) {
+    if (leftTriggerPressed) {
       this.fire();
     }
-
-    this.leftTriggerPressed = leftTriggerPressed;
 
     if (rightTriggerPressed && !this.rightTriggerPressed) {
       this.teleport();
@@ -198,12 +197,11 @@ class Player extends GameObject {
     this.rightTriggerPressed = rightTriggerPressed;
 
     // Update lazar
-    const rotationVector = new THREE
+    const rotationVector = new THREE.negate()
                                .Vector3(
                                    Math.cos(this.mesh.rotation.y), 0,
                                    -Math.sin(this.mesh.rotation.y))
-                               .normalize()
-                               .negate();
+                               .normalize();
 
     const laserCollides = this.collides(rotationVector, 100);
 
@@ -214,7 +212,7 @@ class Player extends GameObject {
     if (laserTarget.length > 1) {
       this.lineGeometry.vertices = [
         new THREE.Vector3(),
-        this.position.clone().sub(laserTarget[0].point.clone())
+        this.line.worldToLocal(laserTarget[0].point.clone())
       ];
     } else {
       this.lineGeometry.vertices =
