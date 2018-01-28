@@ -504,13 +504,18 @@ class Game {
   }
 
   private spawnTurret() {
-    if (this.getObjects().filter((obj) => obj instanceof Turret).length > 5) {
+    const otherTurrets =
+        this.getObjects().filter((obj) => obj instanceof Turret);
+    if (otherTurrets.length > 5) {
       return;
     }
+
+    const newPosition = new THREE.Vector3(
+        THREE.Math.randFloat(-6.5, 6.5), 0, THREE.Math.randFloat(-6.5, 6.5));
+
     const newTurret = new Turret(this);
 
-    newTurret.position.copy(new THREE.Vector3(
-        THREE.Math.randFloat(-6.5, 6.5), 0, THREE.Math.randFloat(-6.5, 6.5)));
+    newTurret.position.copy(newPosition);
 
     this.addObject(newTurret);
   }
