@@ -158,8 +158,6 @@ class Player extends GameObject {
       return int.object.parent instanceof Turret;
     });
 
-    console.log(collides);
-
     if (!(collides.length > 1)) {
       this.position.add(moveVector);
 
@@ -287,7 +285,16 @@ class Turret extends GameObject {
     // Point at the player.
     const targetPosition = this.game.getPlayerPosition().clone();
 
+    const directionVector =
+        targetPosition.sub(this.position).setY(0).normalize();
+
+    const angle = Math.atan2(-directionVector.z, directionVector.x);
+
+    this.rotation.set(0, angle + (Math.PI), 0);
+
     // Maybe fire a bullet
+    this.game.addObject(new Bullet(
+        this.game, this, true, this.position.clone().setZ(1), angle, 2));
   }
 
   onHitByBullet() {
@@ -324,8 +331,6 @@ class Bullet extends GameObject {
     this.scale.set(0.15, 0.15, 0.15);
 
     this.position.copy(this.firePosition);
-
-    console.log(fireAngle);
 
     this.position.add(
         new THREE
