@@ -217,7 +217,8 @@ class Player extends GameObject {
 
   private fire() {
     this.owner.addObject(new Bullet(
-        this.owner, this, false, this.getWorldPosition(), this.rotation.y));
+        this.owner, this, false, this.getWorldPosition(), this.rotation.y,
+        0.75));
   }
 
   private teleport() {
@@ -246,12 +247,24 @@ class Bullet extends GameObject {
   constructor(
       private game: Game, private owner: Player|Turret,
       private hitsOwner: boolean, private firePosition: THREE.Vector3,
-      private fireAngle: number) {
+      private fireAngle: number, private fireDistance: number) {
     super(Game.bulletMesh);
 
-    this.position = this.firePosition.clone();
+    this.scale.set(0.25, 0.25, 0.25);
+
+    this.position.copy(this.firePosition);
 
     this.rotation.set(0, fireAngle, 0);
+
+    this.position.add(
+        new THREE.Vector3(Math.cos(fireAngle), 0, Math.sin(fireAngle))
+            .multiplyScalar(fireDistance));
+
+    const light = new THREE.PointLight(0x1010aa, 0.3, 10);
+
+    light.position.setZ(1);
+
+    this.add(light);
   }
 
   update(frameTime?: number) {}
