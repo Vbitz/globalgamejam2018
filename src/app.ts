@@ -18,6 +18,7 @@ abstract class GameObject extends THREE.Mesh {
  */
 class Level extends GameObject {
   material: THREE.MeshPhongMaterial[];
+
   constructor() {
     super(Game.levelMesh);
 
@@ -116,21 +117,29 @@ class Player extends GameObject {
                            .multiplyScalar(time - this.lastUpdate)
                            .multiplyScalar(this.speed);
 
-    this.raycaster.set(this.position, moveVector.clone().normalize());
-
-    const intersections =
-        this.raycaster.intersectObjects(this.owner.getObjects());
-
-    const collides =
-        intersections.filter((int) => int.object !== this && int.distance < 2);
-
-    console.log(collides);
+    const collides = this.collides(moveVector, 1);
 
     if (!(collides.length > 1)) {
       this.position.add(moveVector);
     }
 
+    this.position.clamp(
+        new THREE.Vector3(-6.75, 0.5, -6.75),
+        new THREE.Vector3(6.75, 0.5, 6.75));
+
     this.lastUpdate = time;
+  }
+
+  private collides(vector: THREE.Vector3, distance: number) {
+    this.raycaster.set(this.position, vector.clone().normalize());
+
+    const intersections =
+        this.raycaster.intersectObjects(this.owner.getObjects());
+
+    const collides = intersections.filter(
+        (int) => int.object !== this && int.distance < distance);
+
+    return collides;
   }
 }
 
