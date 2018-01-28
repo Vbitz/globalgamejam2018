@@ -248,6 +248,8 @@ class Player extends GameObject {
  * Turret is computer controlled. It shoots bullets.
  */
 class Turret extends GameObject {
+  private lastFire: number;
+
   constructor(game: Game) {
     super(game, Game.turretMesh);
   }
@@ -360,7 +362,6 @@ class Game {
   private container: HTMLDivElement;
 
   private raycaster: THREE.Raycaster;
-
   private mainTarget: THREE.WebGLRenderTarget;
 
   private screenScene: THREE.Scene;
@@ -371,7 +372,8 @@ class Game {
 
   private playerCamera: THREE.PerspectiveCamera;
 
-  private lastSpawn: number;
+  private lastSpawn: number = 0;
+  private lastUpdate: number = 0;
 
   init() {
     this.loadAllMeshes();
@@ -404,8 +406,9 @@ class Game {
     this.level = new Level(this);
 
     this.scene.add(this.level);
+    100
 
-    this.player = new Player(this);
+        this.player = new Player(this);
 
     this.scene.add(this.player);
 
@@ -442,6 +445,8 @@ class Game {
   }
 
   private update(frameTime?: number) {
+    const time = (frameTime || 0) / 1000;
+
     this.scene.children.forEach((child) => {
       if (child instanceof GameObject) {
         child.update(frameTime);
@@ -453,6 +458,8 @@ class Game {
     this.renderer.render(this.screenScene, this.screenCamera);
 
     requestAnimationFrame(this.update.bind(this));
+
+    this.lastUpdate = time;
   }
 
   private loadAllMeshes() {
