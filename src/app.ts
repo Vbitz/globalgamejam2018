@@ -99,8 +99,12 @@ class Player extends GameObject {
 
     this.lineGeometry = new THREE.Geometry();
 
-    this.add(new THREE.Line(
-        this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00})));
+    const line = new THREE.Line(
+        this.lineGeometry, new THREE.LineBasicMaterial({color: 0x00ff00}));
+
+    line.scale.set(4, 4, 4);
+
+    this.add(line);
   }
 
   getCamera(): THREE.PerspectiveCamera {
@@ -150,7 +154,12 @@ class Player extends GameObject {
                            .multiplyScalar(time - this.lastUpdate)
                            .multiplyScalar(this.speed);
 
-    const collides = this.collides(moveVector, 1);
+    const collides = this.collides(moveVector, 1)
+                         .filter(
+                             (int) => int.object.parent instanceof GameObject &&
+                                 !(int.object instanceof THREE.Line));
+
+    console.log(collides);
 
     if (!(collides.length > 1)) {
       this.position.add(moveVector);
@@ -193,13 +202,14 @@ class Player extends GameObject {
                                .Vector3(
                                    Math.cos(this.mesh.rotation.y), 0,
                                    -Math.sin(this.mesh.rotation.y))
-                               .normalize();
+                               .normalize()
+                               .negate();
 
     const laserCollides = this.collides(rotationVector, 100);
 
     const laserTarget = laserCollides.filter(
-        (inter) =>
-            inter.object instanceof Level || inter.object instanceof Turret);
+        (inter) => inter.object.parent instanceof Level ||
+            inter.object.parent instanceof Turret);
 
     if (laserTarget.length > 1) {
       this.lineGeometry.vertices = [
@@ -315,8 +325,6 @@ class Bullet extends GameObject {
         }
       }
     });
-
-    console.log(rawCollides, collides);
 
     if (collides.length === 0) {
       this.position.add(moveVector.multiplyScalar(moveAmount));
