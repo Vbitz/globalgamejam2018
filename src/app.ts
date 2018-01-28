@@ -73,6 +73,8 @@ class Player extends GameObject {
   private line: THREE.Line;
   private lineGeometry: THREE.Geometry;
 
+  private light: THREE.PointLight;
+
   private rightTriggerPressed = true;
 
   private lastFire: number;
@@ -86,11 +88,11 @@ class Player extends GameObject {
 
     this.scale.set(0.25, 0.25, 0.25);
 
-    const light = new THREE.PointLight(0x10ea10, 0.3, 10);
+    this.light = new THREE.PointLight(0x10ea10, 0.3, 10);
 
-    light.position.setY(3);
+    this.light.position.setY(3);
 
-    this.add(light);
+    this.add(this.light);
 
     this.position.setY(0.5);
 
@@ -207,6 +209,12 @@ class Player extends GameObject {
     }
     this.lineGeometry.verticesNeedUpdate = true;
 
+    if (this.lastUpdate < this.lastHit + 0.5) {
+      this.light.color.setHex(0x1010ea);
+    } else {
+      this.light.color.setHex(0x10ea10);
+    }
+
     // Update lastUpdate
 
     this.lastUpdate = time;
@@ -218,7 +226,7 @@ class Player extends GameObject {
     }
 
     // 2 second invurnribility timer.
-    if (this.lastUpdate < this.lastHit + 2) {
+    if (this.lastUpdate < this.lastHit + 0.5) {
       return;
     }
 
