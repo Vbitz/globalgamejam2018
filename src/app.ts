@@ -252,11 +252,15 @@ class Player extends GameObject {
         laserCollides.filter((inter) => inter.object.parent instanceof Turret);
 
     if (laserTarget.length > 0) {
-      const turretPosition = laserTarget[0].object.parent.position;
-      const thisPosition = this.position;
+      const turretPosition = laserTarget[0].object.parent.position.clone();
+      const thisPosition = this.position.clone();
 
       this.position.copy(turretPosition);
       laserTarget[0].object.parent.position.copy(thisPosition);
+
+      this.position.clamp(
+          new THREE.Vector3(-6.75, 0.5, -6.75),
+          new THREE.Vector3(6.75, 0.5, 6.75));
     }
   }
 }
@@ -277,6 +281,8 @@ class Turret extends GameObject {
     light.position.setY(3);
 
     this.add(light);
+
+    this.position.setY(0.5);
   }
 
   update(frameTime?: number) {}
@@ -307,6 +313,7 @@ class Bullet extends GameObject {
     material[0].emissiveIntensity = 0.4;
     if (owner instanceof Player) {
       material[0].emissive = new THREE.Color(0x00ff00);
+      this.speed = 20;
     } else if (owner instanceof Turret) {
       material[0].emissive = new THREE.Color(0xff0000);
     }
@@ -492,6 +499,9 @@ class Game {
   }
 
   private spawnTurret() {
+    if (this.getObjects().filter((obj) => obj instanceof Turret).length > 5) {
+      return;
+    }
     const newTurret = new Turret(this);
 
     newTurret.position.copy(new THREE.Vector3(
