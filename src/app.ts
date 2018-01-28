@@ -87,9 +87,9 @@ class Player extends GameObject {
     this.camera.position.set(0, 50, 20);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    this.scale.set(0.25, 0.25, 0.25);
-
     this.add(this.camera);
+
+    this.scale.set(0.25, 0.25, 0.25);
 
     const light = new THREE.PointLight(0x10ea10, 0.3, 10);
 
@@ -252,6 +252,14 @@ class Turret extends GameObject {
 
   constructor(game: Game) {
     super(game, Game.turretMesh);
+
+    this.scale.set(0.25, 0.25, 0.25);
+
+    const light = new THREE.PointLight(0xea1010, 0.3, 10);
+
+    light.position.setY(3);
+
+    this.add(light);
   }
 
   update(frameTime?: number) {}
@@ -406,9 +414,8 @@ class Game {
     this.level = new Level(this);
 
     this.scene.add(this.level);
-    100
 
-        this.player = new Player(this);
+    this.player = new Player(this);
 
     this.scene.add(this.player);
 
@@ -447,6 +454,11 @@ class Game {
   private update(frameTime?: number) {
     const time = (frameTime || 0) / 1000;
 
+    if (this.lastUpdate > this.lastSpawn + 2) {
+      this.spawnTurret();
+      this.lastSpawn = this.lastUpdate;
+    }
+
     this.scene.children.forEach((child) => {
       if (child instanceof GameObject) {
         child.update(frameTime);
@@ -460,6 +472,15 @@ class Game {
     requestAnimationFrame(this.update.bind(this));
 
     this.lastUpdate = time;
+  }
+
+  private spawnTurret() {
+    const newTurret = new Turret(this);
+
+    newTurret.position.copy(new THREE.Vector3(
+        THREE.Math.randFloat(-6.5, 6.5), 0, THREE.Math.randFloat(-6.5, 6.5)));
+
+    this.addObject(newTurret);
   }
 
   private loadAllMeshes() {
